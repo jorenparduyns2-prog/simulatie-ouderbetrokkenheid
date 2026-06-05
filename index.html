@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ouderbetrokkenheid Simulatie</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:   #1B2A4A;
+    --teal:   #028090;
+    --teal2:  #00A896;
+    --cream:  #F7F4EF;
+    --white:  #FFFFFF;
+    --red:    #E63946;
+    --green:  #2D9E6B;
+    --orange: #F4A261;
+    --text:   #1E293B;
+    --muted:  #64748B;
+    --border: #E2E8F0;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; }
+
+  header {
+    background: var(--navy); padding: 16px 28px;
+    display: flex; align-items: center; gap: 14px;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,.25);
+  }
+  .logo-bar { width: 4px; height: 32px; background: var(--teal); border-radius: 2px; flex-shrink: 0; }
+  header h1 { font-family: 'Syne', sans-serif; font-size: .95rem; font-weight: 700; color: #fff; }
+  header span { font-size: .78rem; color: rgba(255,255,255,.45); font-weight: 300; margin-left: 6px; }
+  .admin-btn-header {
+    margin-left: auto; background: none; border: 1px solid rgba(255,255,255,.15);
+    color: rgba(255,255,255,.4); border-radius: 8px; padding: 5px 12px;
+    font-size: .72rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all .2s;
+  }
+  .admin-btn-header:hover { border-color: var(--teal); color: var(--teal2); }
+
+  main { max-width: 680px; margin: 0 auto; padding: 40px 20px 80px; }
+
+  .screen { display: none; animation: fadeUp .45s ease both; }
+  .screen.active { display: block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  /* WAITING */
+  .waiting-screen { text-align: center; padding: 60px 20px; }
+  .waiting-screen .big-icon { font-size: 3rem; margin-bottom: 20px; animation: bob 2s ease-in-out infinite; }
+  @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  .waiting-screen h2 { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+  .waiting-screen p { color: var(--muted); font-size: .95rem; line-height: 1.6; }
+  .dots-loader { display: flex; justify-content: center; gap: 8px; margin-top: 28px; }
+  .dots-loader span { width: 10px; height: 10px; border-radius: 50%; background: var(--teal); animation: dotpulse 1.4s infinite; }
+  .dots-loader span:nth-child(2) { animation-delay: .2s; }
+  .dots-loader span:nth-child(3) { animation-delay: .4s; }
+  @keyframes dotpulse { 0%,80%,100%{transform:scale(.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+
+  /* Q BLOCK */
+  .q-block { background: var(--navy); border-radius: 14px; padding: 22px 26px; margin-bottom: 18px; }
+  .q-block h3 { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .q-block p { font-size: .88rem; color: rgba(255,255,255,.5); }
+  .q-block .context-pill {
+    display: inline-block; background: rgba(255,255,255,.1); border-radius: 100px;
+    padding: 4px 12px; font-size: .78rem; color: rgba(255,255,255,.7); margin-bottom: 10px;
+  }
+
+  /* CHOICES */
+  .choices { display: flex; flex-direction: column; gap: 11px; margin-top: 4px; }
+  .choice-btn {
+    background: var(--white); border: 2px solid var(--border); border-radius: 14px;
+    padding: 16px 20px; cursor: pointer; text-align: left;
+    display: flex; align-items: center; gap: 14px;
+    font-family: 'DM Sans', sans-serif; font-size: .97rem; font-weight: 500; color: var(--text);
+    transition: all .22s;
+  }
+  .choice-btn:hover { border-color: var(--teal); transform: translateX(4px); box-shadow: 0 3px 16px rgba(2,128,144,.14); }
+  .choice-btn .c-icon { font-size: 1.35rem; flex-shrink: 0; }
+  .choice-btn .c-text strong { display: block; margin-bottom: 1px; }
+  .choice-btn .c-text small { color: var(--muted); font-size: .83rem; font-weight: 400; }
+  .choice-btn.selected { border-color: var(--teal); background: rgba(2,128,144,.05); }
+  .choice-btn.disabled { opacity: .4; pointer-events: none; }
+
+  /* OUTCOME BLOCKS */
+  .outcome-block { border-radius: 16px; overflow: hidden; box-shadow: 0 4px 24px rgba(0,0,0,.1); margin-bottom: 20px; }
+  .outcome-head { padding: 22px 26px 18px; display: flex; align-items: flex-start; gap: 14px; }
+  .outcome-head .o-icon { font-size: 2rem; flex-shrink: 0; margin-top: 2px; }
+  .outcome-head h3 { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+  .outcome-head p { font-size: .92rem; line-height: 1.6; opacity: .85; }
+  .outcome-foot { background: var(--white); padding: 20px 26px; font-size: .93rem; line-height: 1.7; color: var(--text); }
+  .outcome-foot p { margin-bottom: 10px; }
+  .outcome-foot p:last-child { margin-bottom: 0; }
+
+  .oc-red    .outcome-head { background: #FEF2F2; color: var(--red); }
+  .oc-red    .outcome-head p { color: #7f1d1d; }
+  .oc-green  .outcome-head { background: #F0FDF4; color: var(--green); }
+  .oc-green  .outcome-head p { color: #14532D; }
+  .oc-orange .outcome-head { background: #FFF7ED; color: #C2410C; }
+  .oc-orange .outcome-head p { color: #7C2D12; }
+  .oc-blue   .outcome-head { background: #EFF6FF; color: #1D4ED8; }
+  .oc-blue   .outcome-head p { color: #1e3a8a; }
+
+  /* SCI BOX */
+  .sci-box { border-left: 3px solid var(--teal); background: rgba(2,128,144,.05); border-radius: 0 10px 10px 0; padding: 14px 18px; margin: 14px 0; }
+  .sci-box .sci-label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--teal); margin-bottom: 6px; }
+  .sci-box p { font-size: .9rem; line-height: 1.65; color: var(--text); }
+
+  /* PHONE */
+  .phone-wrap { display: flex; justify-content: center; margin: 16px 0; }
+  .phone { width: 230px; background: #111827; border-radius: 32px; padding: 10px; box-shadow: 0 14px 40px rgba(0,0,0,.3), inset 0 0 0 1px rgba(255,255,255,.07); }
+  .phone-screen { background: #fff; border-radius: 24px; overflow: hidden; }
+  .phone-notch { background: #111827; height: 20px; display: flex; justify-content: center; align-items: center; }
+  .phone-pill { width: 65px; height: 8px; background: #000; border-radius: 100px; }
+  .app-header { background: #f2f2f7; padding: 8px 13px; display: flex; align-items: center; gap: 7px; border-bottom: 1px solid #ddd; }
+  .app-header span { font-size: .73rem; font-weight: 600; color: #222; }
+  .bubble-wrap { padding: 11px; display: flex; flex-direction: column; gap: 7px; min-height: 100px; }
+  .bbl-out, .bbl-in { max-width: 82%; padding: 7px 10px; border-radius: 12px; font-size: .74rem; line-height: 1.5; }
+  .bbl-out { background: #007AFF; color: #fff; align-self: flex-end; border-bottom-right-radius: 3px; }
+  .bbl-in  { background: #e5e5ea; color: #111; align-self: flex-start; border-bottom-left-radius: 3px; }
+  .bbl-status { font-size: .63rem; color: #999; text-align: right; }
+
+  /* CALL ANIMATION */
+  .call-card { background: var(--white); border-radius: 16px; padding: 28px 24px; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.09); margin-bottom: 20px; }
+  .call-avatar { width: 72px; height: 72px; background: var(--navy); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 16px; }
+  .call-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.1rem; color: var(--navy); margin-bottom: 4px; }
+  .call-status { font-size: .88rem; color: var(--muted); margin-bottom: 20px; }
+  .call-rings { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+  .ring-dot { width: 12px; height: 12px; border-radius: 50%; background: var(--teal); animation: ringpulse 1.2s infinite; }
+  .ring-dot:nth-child(2) { animation-delay: .2s; }
+  .ring-dot:nth-child(3) { animation-delay: .4s; }
+  .ring-dot:nth-child(4) { animation-delay: .6s; }
+  @keyframes ringpulse { 0%,100%{transform:scale(.5);opacity:.3} 50%{transform:scale(1);opacity:1} }
+
+  /* TIMER BAR */
+  .timer-wrap { margin: 8px 0 16px; }
+  .timer-label { font-size: .8rem; color: var(--muted); text-align: center; margin-bottom: 6px; }
+  .timer-bar-bg { background: var(--border); border-radius: 100px; height: 5px; overflow: hidden; }
+  .timer-bar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--teal), var(--teal2)); width: 0%; transition: width 3s linear; }
+
+  /* HIGHLIGHT */
+  .highlight { background: var(--navy); border-radius: 14px; padding: 22px 26px; color: #fff; margin: 20px 0; }
+  .highlight h3 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; margin-bottom: 6px; }
+  .highlight p { font-size: .93rem; color: rgba(255,255,255,.7); line-height: 1.65; }
+  .highlight strong { color: var(--teal2); }
+
+  /* ROUND BADGE */
+  .round-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(2,128,144,.1); border: 1px solid rgba(2,128,144,.2);
+    border-radius: 100px; padding: 6px 14px;
+    font-size: .82rem; font-weight: 600; color: var(--teal); margin-bottom: 18px;
+  }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.55); backdrop-filter: blur(4px); z-index: 200; display: flex; align-items: center; justify-content: center; animation: fadeIn .2s ease; }
+  @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+  .modal-box { background: var(--white); border-radius: 20px; padding: 36px 32px; width: 340px; box-shadow: 0 20px 60px rgba(0,0,0,.25); }
+  .modal-box h2 { font-family: 'Syne', sans-serif; font-size: 1.3rem; font-weight: 800; color: var(--navy); margin-bottom: 6px; }
+  .modal-box p { font-size: .85rem; color: var(--muted); margin-bottom: 24px; }
+  .modal-box input { width: 100%; padding: 12px 14px; border: 2px solid var(--border); border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: .95rem; margin-bottom: 12px; outline: none; transition: border-color .2s; }
+  .modal-box input:focus { border-color: var(--teal); }
+  .modal-box .login-btn { width: 100%; padding: 13px; background: var(--navy); color: #fff; border: none; border-radius: 10px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: .95rem; cursor: pointer; transition: background .2s; }
+  .modal-box .login-btn:hover { background: var(--teal); }
+  .modal-box .cancel-btn { width: 100%; padding: 10px; background: none; color: var(--muted); border: none; font-size: .85rem; cursor: pointer; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
+  .modal-error { color: var(--red); font-size: .83rem; margin-top: -6px; margin-bottom: 10px; display: none; }
+
+  /* ADMIN PANEL */
+  #adminPanel { display: none; position: fixed; inset: 0; background: #0f172a; z-index: 300; flex-direction: column; overflow-y: auto; }
+  #adminPanel.open { display: flex; }
+  .admin-header { background: #1e293b; padding: 18px 28px; display: flex; align-items: center; gap: 14px; border-bottom: 2px solid var(--teal); flex-shrink: 0; }
+  .admin-header h1 { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: #fff; }
+  .admin-header .close-admin { margin-left: auto; background: #334155; color: #fff; border: none; border-radius: 8px; padding: 7px 14px; font-size: .8rem; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 600; }
+  .admin-body { padding: 28px; max-width: 700px; margin: 0 auto; width: 100%; }
+  .admin-section-title { font-family: 'Syne', sans-serif; font-size: .82rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); margin-bottom: 12px; margin-top: 24px; }
+  .admin-section-title:first-child { margin-top: 0; }
+
+  .state-indicator { background: #1e293b; border-radius: 12px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; border: 1px solid #334155; margin-bottom: 20px; }
+  .state-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--teal2); flex-shrink: 0; animation: pulse-dot 2s infinite; }
+  @keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .state-indicator span { color: rgba(255,255,255,.7); font-size: .88rem; }
+  .state-indicator strong { color: #fff; }
+
+  .bc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .bc-btn { border-radius: 12px; padding: 16px 18px; border: none; cursor: pointer; text-align: left; font-family: 'DM Sans', sans-serif; transition: all .2s; display: flex; flex-direction: column; gap: 4px; }
+  .bc-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.3); }
+  .bc-btn .bc-icon { font-size: 1.3rem; }
+  .bc-btn .bc-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: .88rem; }
+  .bc-btn .bc-sub { font-size: .75rem; opacity: .65; }
+
+  .bc-r1   { background: #1e3a5f; color: #93c5fd; }
+  .bc-r2   { background: #1a3a2f; color: #6ee7b7; }
+  .bc-show { background: linear-gradient(135deg, var(--teal), var(--teal2)); color: #fff; }
+  .bc-wait { background: #2d1f1a; color: #fcd34d; }
+  .bc-over { background: #1e293b; color: #c4b5fd; }
+  .bc-rst  { background: #3f1515; color: #fca5a5; }
+  .bc-full { grid-column: span 2; background: linear-gradient(135deg, #1e293b, #334155); color: #e2e8f0; }
+
+  .stats-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 8px; }
+  .stat-card { background: #1e293b; border-radius: 10px; padding: 12px; border: 1px solid #334155; text-align: center; }
+  .stat-card .s-icon { font-size: 1.2rem; }
+  .stat-card .s-count { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: #fff; }
+  .stat-card .s-label { font-size: .7rem; color: rgba(255,255,255,.4); }
+  .stat-card .s-pct { font-size: .75rem; color: var(--teal2); font-weight: 600; }
+
+  .section-title { font-family: 'Syne', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--navy); margin: 24px 0 12px; }
+  .section-sub { font-size: .9rem; color: var(--muted); margin-top: -8px; margin-bottom: 14px; }
+
+  .note-box { background: rgba(2,128,144,.07); border: 1px solid rgba(2,128,144,.2); border-radius: 10px; padding: 12px 16px; font-size: .85rem; color: var(--teal); margin-bottom: 16px; line-height: 1.5; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-bar"></div>
+  <div>
+    <h1>Simulatie — Ouderbetrokkenheid</h1>
+    <span>School De Prins · 2de graad Arbeidsfinaliteit</span>
+  </div>
+  <button class="admin-btn-header" onclick="openLoginModal()">⚙ Admin</button>
+</header>
+
+<main>
+
+<!-- ══ S0: WACHT ══ -->
+<div class="screen active" id="s0">
+  <div class="waiting-screen">
+    <div class="big-icon">👀</div>
+    <h2>Kijk naar het scherm vooraan.</h2>
+    <p>De presentator stelt zo meteen een vraag.<br>Jij mag dan kiezen op jouw gsm.</p>
+    <div class="dots-loader"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- ══ S1: RONDE 1 — EERSTE KEUZE ══ -->
+<div class="screen" id="s1">
+  <div class="round-badge">🎯 Ronde 1 — Eerste aanpak</div>
+
+  <div class="q-block">
+    <h3>Hoe bereik jij de ouders van Rayan?</h3>
+    <p>Kies eerlijk wat jij in de praktijk zou doen.</p>
+  </div>
+
+  <div class="choices">
+    <button class="choice-btn" onclick="vote1('bellen')" id="r1-bellen">
+      <span class="c-icon">📞</span>
+      <span class="c-text"><strong>Persoonlijk opbellen</strong><small>Je neemt zelf de telefoon en belt naar huis.</small></span>
+    </button>
+    <button class="choice-btn" onclick="vote1('mail-slecht')" id="r1-mail-slecht">
+      <span class="c-icon">✉️</span>
+      <span class="c-text"><strong>Mail sturen over de afwezigheid</strong><small>Je schrijft een formeel bericht over wat er misliep.</small></span>
+    </button>
+    <button class="choice-btn" onclick="vote1('mail-goed')" id="r1-mail-goed">
+      <span class="c-icon">💬</span>
+      <span class="c-text"><strong>Positief en laagdrempelig mailen</strong><small>Je stuurt een warm bericht zonder probleemtaal.</small></span>
+    </button>
+    <button class="choice-btn" onclick="vote1('ankerpersoon')" id="r1-ankerpersoon">
+      <span class="c-icon">🧑‍💼</span>
+      <span class="c-text"><strong>Ankerpersoon inschakelen</strong><small>Je speelt de situatie door naar de schoolschakel.</small></span>
+    </button>
+  </div>
+  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;">Joren beslist wanneer jullie verder gaan.</p>
+</div>
+
+<!-- ══ S2: WACHT NA RONDE 1 ══ -->
+<div class="screen" id="s2">
+  <div class="waiting-screen">
+    <div class="big-icon">⏳</div>
+    <h2>Jouw keuze is geregistreerd.</h2>
+    <p>Wacht even terwijl de presentator<br>de resultaten bespreekt.</p>
+    <div class="dots-loader"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- ══ S3: GEVOLG RONDE 1 ══ -->
+<div class="screen" id="s3">
+  <div id="outcome-r1"></div>
+</div>
+
+<!-- ══ S4: RONDE 2 — OPVOLGING (enkel voor mail-goed) ══ -->
+<div class="screen" id="s4">
+  <div class="round-badge">📬 Ronde 2 — Geen reactie na 2 dagen</div>
+
+  <div class="q-block">
+    <div class="context-pill">📧 Je laagdrempelige mail bleef onbeantwoord.</div>
+    <h3>Wat doe je nu?</h3>
+    <p>2 dagen gewacht, nog steeds niets. Jouw volgende stap?</p>
+  </div>
+
+  <div class="choices">
+    <button class="choice-btn" onclick="vote2('bellen2')" id="r2-bellen">
+      <span class="c-icon">📞</span>
+      <span class="c-text"><strong>Persoonlijk opbellen</strong><small>Toch maar de telefoon nemen.</small></span>
+    </button>
+    <button class="choice-btn" onclick="vote2('whatsapp')" id="r2-whatsapp">
+      <span class="c-icon">💚</span>
+      <span class="c-text"><strong>WhatsApp sturen</strong><small>Kort berichtje via hun vertrouwde app.</small></span>
+    </button>
+    <button class="choice-btn" onclick="vote2('huisbezoek')" id="r2-huisbezoek">
+      <span class="c-icon">🏠</span>
+      <span class="c-text"><strong>Huisbezoek plannen</strong><small>Zelf langsgaan bij het gezin.</small></span>
+    </button>
+    <button class="choice-btn" onclick="vote2('ankerpersoon2')" id="r2-ankerpersoon">
+      <span class="c-icon">🧑‍💼</span>
+      <span class="c-text"><strong>Ankerpersoon inschakelen</strong><small>Nu doorspelen naar de schoolschakel.</small></span>
+    </button>
+  </div>
+  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;">Joren beslist wanneer jullie verder gaan.</p>
+</div>
+
+<!-- ══ S5: WACHT NA RONDE 2 ══ -->
+<div class="screen" id="s5">
+  <div class="waiting-screen">
+    <div class="big-icon">⏳</div>
+    <h2>Keuze geregistreerd.</h2>
+    <p>Wacht even terwijl de presentator<br>de resultaten bespreekt.</p>
+    <div class="dots-loader"><span></span><span></span><span></span></div>
+  </div>
+</div>
+
+<!-- ══ S6: BEL ANIMATIE + RANDOM UITKOMST ══ -->
+<div class="screen" id="s6">
+  <div class="round-badge">📞 Je hebt gebeld…</div>
+
+  <div class="call-card" id="call-card">
+    <div class="call-avatar">👨‍👩‍👦</div>
+    <div class="call-name">Ouders van Rayan A.</div>
+    <div class="call-status" id="call-status-text">Verbinding wordt gemaakt…</div>
+    <div class="call-rings" id="call-rings">
+      <div class="ring-dot"></div>
+      <div class="ring-dot"></div>
+      <div class="ring-dot"></div>
+      <div class="ring-dot"></div>
+    </div>
+    <div class="timer-wrap">
+      <div class="timer-label" id="call-timer-label">Bellen…</div>
+      <div class="timer-bar-bg"><div class="timer-bar-fill" id="call-timer-bar"></div></div>
+    </div>
+  </div>
+
+  <div id="call-result" style="display:none;"></div>
+</div>
+
+<!-- ══ S7: RONDE 3 — NA GEEN GEHOOR: ANKERPERSOON ══ -->
+<div class="screen" id="s7">
+  <div class="round-badge">📵 Ronde 3 — Geen gehoor</div>
+
+  <div class="outcome-block oc-red" style="margin-bottom:20px;">
+    <div class="outcome-head">
+      <span class="o-icon">📵</span>
+      <div>
+        <h3>Niemand neemt op.</h3>
+        <p>Je hebt twee keer gebeld. Geen gehoor — of er is een taalbarrière die het gesprek onmogelijk maakt.</p>
+      </div>
+    </div>
+    <div class="outcome-foot">
+      <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div>
+      <p>60% van de gevallen werkt telefonisch contact niet meteen. Taalbarrières, wisselende werkroosters, wantrouwen — er zijn veel redenen. Dit is normaal, en het stappenplan houdt hier rekening mee.</p></div>
+    </div>
+  </div>
+
+  <div class="q-block">
+    <div class="context-pill">🔴 Gebeld — geen gehoor</div>
+    <h3>Er is nog één stap mogelijk. Welke?</h3>
+    <p>Dit is de laatste optie in het stappenplan.</p>
+  </div>
+
+  <div class="choices">
+    <button class="choice-btn" onclick="vote3('ankerpersoon3')" id="r3-ankerpersoon">
+      <span class="c-icon">🧑‍💼</span>
+      <span class="c-text"><strong>Ankerpersoon inschakelen</strong><small>Nu is het écht de juiste stap — jij hebt alles geprobeerd.</small></span>
+    </button>
+  </div>
+  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;">Joren beslist wanneer jullie verder gaan.</p>
+</div>
+
+<!-- ══ S8: EINDSCHERM ANKERPERSOON SUCCES ══ -->
+<div class="screen" id="s8">
+  <div class="round-badge">✅ Eindresultaat</div>
+
+  <div class="outcome-block oc-green">
+    <div class="outcome-head">
+      <span class="o-icon">🤝</span>
+      <div>
+        <h3>Ankerpersoon maakt contact.</h3>
+        <p>Via communicatie in de thuistaal reageert de ouder eindelijk. Afspraak gemaakt.</p>
+      </div>
+    </div>
+    <div class="outcome-foot">
+      <div class="phone-wrap">
+        <div class="phone">
+          <div class="phone-notch"><div class="phone-pill"></div></div>
+          <div class="phone-screen">
+            <div class="app-header"><span>💬 Ankerpersoon · Ouders Rayan</span></div>
+            <div class="bubble-wrap">
+              <div class="bbl-out" style="font-size:.71rem;">Merhaba, ik ben de ankerpersoon van school…</div>
+              <div class="bbl-in" style="font-size:.71rem;">Bedankt. We komen volgende week langs.</div>
+              <div class="bbl-status">✓✓ gelezen</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sci-box"><div class="sci-label">Jehoul et al. (2023) · Epstein (2011)</div>
+      <p>De ankerpersoon als schakel voor taalbarrières is precies waarvoor deze rol bedoeld is — ná de pogingen van de leerkracht. Je hebt het stappenplan correct doorlopen.</p></div>
+      <p><strong style="color:var(--green)">✓ Je hebt het volledig stappenplan doorlopen. Dit is hoe het werkt.</strong></p>
+    </div>
+  </div>
+
+  <div class="highlight">
+    <h3>Het verschil is niet de ouder.</h3>
+    <p>Het verschil is de aanpak. <strong>Warm bericht → bellen → ankerpersoon.</strong> Elke stap op het juiste moment.</p>
+  </div>
+</div>
+
+<!-- ══ S9: VOLLEDIG OVERZICHT (admin) ══ -->
+<div class="screen" id="s9">
+  <div class="section-title">Alle uitkomsten</div>
+  <div class="section-sub">Zo had elke keuze kunnen eindigen.</div>
+
+  <div class="outcome-block oc-orange">
+    <div class="outcome-head"><span class="o-icon">😬</span><div><h3>📞 Bellen (eerste stap)</h3><p>"Waarom belt u zomaar? Had u niet eerst een berichtje kunnen sturen?"</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Bellen zonder voorafgaand contact kan voelen als een overval. Start altijd met een warm bericht, dan bellen.</p></div></div>
+  </div>
+  <div class="outcome-block oc-red">
+    <div class="outcome-head"><span class="o-icon">😤</span><div><h3>✉️ Formele mail</h3><p>"Rayan doet niets fout. Jullie hebben het altijd op hem gemunt."</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemtaal creëert weerstand. De relatie is beschadigd voor ze begonnen is.</p></div></div>
+  </div>
+  <div class="outcome-block oc-green">
+    <div class="outcome-head"><span class="o-icon">✅</span><div><h3>💬 Laagdrempelige mail → bellen → ankerpersoon</h3><p>Het volledige stappenplan. Warm bericht, opvolging, dan de juiste schakel.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011) · Jehoul et al. (2023)</div><p>Kwaliteitsvolle betrokkenheid begint met een uitnodiging. Elke stap op het juiste moment — dat is wat het verschil maakt.</p></div></div>
+  </div>
+  <div class="outcome-block oc-red">
+    <div class="outcome-head"><span class="o-icon">😵</span><div><h3>🧑‍💼 Meteen ankerpersoon</h3><p>De ankerpersoon heeft een burn-out als iedereen zo snel doorschakelt.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>De ankerpersoon is stap 3 — niet stap 1. Bewaar hem voor als jij het zelf niet meer kan oplossen.</p></div></div>
+  </div>
+
+  <div class="highlight">
+    <h3>Het verschil is niet de ouder.</h3>
+    <p>Het verschil is de aanpak. <strong>Proactief, warm en persoonlijk</strong> — en op het juiste moment doorschakelen.</p>
+  </div>
+</div>
+
+</main>
+
+<!-- ══ LOGIN MODAL ══ -->
+<div class="modal-overlay" id="loginModal" style="display:none;">
+  <div class="modal-box">
+    <h2>🔐 Admin toegang</h2>
+    <p>Voer de beheerdersgegevens in.</p>
+    <input type="text" id="loginUser" placeholder="Gebruikersnaam" autocomplete="off" />
+    <input type="password" id="loginPass" placeholder="Wachtwoord" autocomplete="off" onkeydown="if(event.key==='Enter')doLogin()" />
+    <p class="modal-error" id="loginError">Ongeldige gegevens. Probeer opnieuw.</p>
+    <button class="login-btn" onclick="doLogin()">Inloggen</button>
+    <button class="cancel-btn" onclick="closeLoginModal()">Annuleren</button>
+  </div>
+</div>
+
+<!-- ══ ADMIN PANEL ══ -->
+<div id="adminPanel">
+  <div class="admin-header">
+    <div class="logo-bar"></div>
+    <h1>🎛 Presentator — Controlepaneel</h1>
+    <button class="close-admin" onclick="closeAdmin()">✕ Sluiten</button>
+  </div>
+  <div class="admin-body">
+
+    <div class="state-indicator">
+      <div class="state-dot"></div>
+      <span>Huidig scherm: <strong id="currentScreenLabel">—</strong></span>
+    </div>
+
+    <div class="admin-section-title">📊 Stemresultaten ronde 1</div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="s-icon">📞</div><div class="s-count" id="st-bellen">0</div><div class="s-label">Bellen</div><div class="s-pct" id="sp-bellen">—</div></div>
+      <div class="stat-card"><div class="s-icon">✉️</div><div class="s-count" id="st-mail-slecht">0</div><div class="s-label">Formeel</div><div class="s-pct" id="sp-mail-slecht">—</div></div>
+      <div class="stat-card"><div class="s-icon">💬</div><div class="s-count" id="st-mail-goed">0</div><div class="s-label">Laagdrempelig</div><div class="s-pct" id="sp-mail-goed">—</div></div>
+      <div class="stat-card"><div class="s-icon">🧑‍💼</div><div class="s-count" id="st-ankerpersoon">0</div><div class="s-label">Anker</div><div class="s-pct" id="sp-ankerpersoon">—</div></div>
+    </div>
+    <p style="color:rgba(255,255,255,.3); font-size:.75rem; margin-bottom:4px;" id="totalVotes1">Totaal: 0 stemmen</p>
+
+    <div class="admin-section-title">🎯 Schermen besturen — Ronde 1</div>
+    <div class="bc-grid">
+      <button class="bc-btn bc-r1" onclick="broadcast('s0')"><span class="bc-icon">👀</span><span class="bc-title">Wachtscherm</span><span class="bc-sub">Iedereen wacht</span></button>
+      <button class="bc-btn bc-r1" onclick="broadcast('s1')"><span class="bc-icon">🗳</span><span class="bc-title">① Laat kiezen</span><span class="bc-sub">Ronde 1 — eerste aanpak</span></button>
+      <button class="bc-btn bc-wait" onclick="broadcast('s2')"><span class="bc-icon">⏳</span><span class="bc-title">② Wachten</span><span class="bc-sub">Terwijl jij uitlegt</span></button>
+      <button class="bc-btn bc-show" onclick="broadcast('s3')"><span class="bc-icon">✨</span><span class="bc-title">③ Toon gevolg R1</span><span class="bc-sub">Persoonlijk resultaat</span></button>
+    </div>
+
+    <div class="admin-section-title">🔄 Ronde 2 — Opvolging (alleen voor wie laagdrempelig mailde)</div>
+    <div class="note-box">💡 Start ronde 2 alleen als je de groep wil meenemen in de opvolgingsstap. De juiste keuze is bellen — met een random uitkomst van 40/60.</div>
+    <div class="bc-grid">
+      <button class="bc-btn bc-r2" onclick="broadcast('s4')"><span class="bc-icon">📬</span><span class="bc-title">④ Ronde 2 — Kies opvolging</span><span class="bc-sub">Geen reactie na mail</span></button>
+      <button class="bc-btn bc-wait" onclick="broadcast('s5')"><span class="bc-icon">⏳</span><span class="bc-title">⑤ Wachten R2</span><span class="bc-sub">Terwijl jij uitlegt</span></button>
+      <button class="bc-btn bc-show" onclick="startBelRonde()"><span class="bc-icon">📞</span><span class="bc-title">⑥ Start belanimatie</span><span class="bc-sub">40% opnemen / 60% niet</span></button>
+      <button class="bc-btn bc-r2" onclick="broadcast('s7')"><span class="bc-icon">📵</span><span class="bc-title">⑦ Geen gehoor → R3</span><span class="bc-sub">Ankerpersoon als laatste stap</span></button>
+    </div>
+
+    <div class="admin-section-title">🏁 Eindschermen</div>
+    <div class="bc-grid">
+      <button class="bc-btn bc-show" onclick="broadcast('s8')"><span class="bc-icon">✅</span><span class="bc-title">Eindresultaat</span><span class="bc-sub">Ankerpersoon maakt contact</span></button>
+      <button class="bc-btn bc-over" onclick="broadcast('s9')"><span class="bc-icon">📊</span><span class="bc-title">Volledig overzicht</span><span class="bc-sub">Alle uitkomsten</span></button>
+      <button class="bc-btn bc-rst" onclick="broadcastReset()" style="grid-column:span 2;"><span class="bc-icon">↩</span><span class="bc-title">Reset alles</span><span class="bc-sub">Terug naar begin, stemmen wissen</span></button>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+<script>
+// ══ FIREBASE ══
+const firebaseConfig = {
+  apiKey: "AIzaSyDaGUSzJETWDsCR0NJhualMJQJH2uCfAbU",
+  authDomain: "simulatie-ouderbetrokkenheid.firebaseapp.com",
+  databaseURL: "https://simulatie-ouderbetrokkenheid-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "simulatie-ouderbetrokkenheid",
+  storageBucket: "simulatie-ouderbetrokkenheid.firebasestorage.app",
+  messagingSenderId: "732713924433",
+  appId: "1:732713924433:web:b1e66c1136367af1f80570"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ══ STORAGE — votes via Firebase, own vote via sessionStorage ══
+function getVote1()  { return sessionStorage.getItem('vote1'); }
+function setVote1(v) { sessionStorage.setItem('vote1', v); }
+function getVote2()  { return sessionStorage.getItem('vote2'); }
+function setVote2(v) { sessionStorage.setItem('vote2', v); }
+
+const screenNames = {s0:'Wachtscherm',s1:'Ronde 1 — kiezen',s2:'Wachten R1',s3:'Gevolg R1',s4:'Ronde 2 — opvolging',s5:'Wachten R2',s6:'Belanimatie',s7:'Ronde 3 — ankerpersoon',s8:'Eindresultaat',s9:'Volledig overzicht'};
+
+// ══ OUTCOMES RONDE 1 ══
+const outcomes1 = {
+  bellen: {
+    cls:'oc-orange', icon:'😬',
+    title:'Je hebt gebeld. Maar de ouders schrikken.',
+    subtitle:'"Waarom belt u zomaar? Had u niet eerst een berichtje kunnen sturen?"',
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel over Rayan…</div><div class="bbl-in" style="font-size:.72rem;">Drie weken?! Waarom geen berichtje eerst?</div><div class="bbl-in" style="font-size:.72rem;background:#fff3e0;">Dit is onbeleefd.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005) · Epstein (2011)</div><p>Bellen zonder voorafgaand contact kan voelen als een overval. Start met een warm bericht, dan bellen als opvolging.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goede intentie, verkeerde volgorde.</strong></p>`
+  },
+  'mail-slecht': {
+    cls:'oc-red', icon:'😤',
+    title:'De ouders schieten in de verdediging.',
+    subtitle:'"Rayan doet helemaal niets fout. Jullie hebben het altijd op hem gemunt."',
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Reactie ontvangen</span></div><div class="bubble-wrap"><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">"Rayan doet niets fout. Jullie hebben het altijd op hem gemunt."</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Verder geen reactie.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemtaal creëert weerstand. De ouder beschermt zijn kind — een natuurlijke reactie. Maar het gesprek is nu geblokkeerd.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ De relatie is beschadigd voor ze begonnen is.</strong></p>`
+  },
+  'mail-goed': {
+    cls:'oc-green', icon:'✅',
+    title:'Perfect vertrekpunt!',
+    subtitle:'Ouder voelt zich niet aangevallen. De deur staat open. Nu wachten we 2 dagen…',
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Mail verzonden</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">"Dag, we denken aan Rayan. Is alles goed thuis?"</div><div style="background:#e8f5e9;border-radius:9px;padding:7px 9px;font-size:.72rem;color:#2D9E6B;font-weight:600;align-self:flex-start;">✓ Ouder voelt zich niet aangevallen.<br><span style="font-weight:400;color:#444;">De deur staat open.</span></div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011) · Hill & Tyson (2009)</div><p>Kwaliteitsvolle betrokkenheid begint met een uitnodiging. Maar 2 dagen later — geen reactie. Wat nu?</p></div><p style="margin-top:10px;font-size:.88rem;color:var(--teal);font-weight:600;">→ De simulatie gaat verder…</p>`
+  },
+  ankerpersoon: {
+    cls:'oc-red', icon:'😵',
+    title:'De ankerpersoon heeft een burn-out.',
+    subtitle:'Als elke leerkracht bij de minste twijfel doorschakelt, houdt niemand het vol.',
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>💬 Berichten · Ankerpersoon</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">Kan jij contact opnemen met de ouders van Rayan?</div><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">Dit is al de 8ste vraag vandaag… Ik kan dit niet alleen aan.</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Status: 🔴 overbelast</div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011) · Walker et al. (2005)</div><p>De ankerpersoon is stap 3 — niet stap 1. Start altijd zelf met bellen of een warm bericht.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Goed dat je hem kent — bewaar hem voor als het echt nodig is.</strong></p>`
+  }
+};
+
+// ══ OUTCOMES RONDE 2 (niet-bellen) ══
+const outcomes2 = {
+  whatsapp: {
+    cls:'oc-orange', icon:'💚',
+    title:'WhatsApp — misschien handig, maar…',
+    subtitle:'Niet alle ouders hebben jouw nummer. En privé-apps zijn geen officieel schoolkanaal.',
+    body:`<div class="sci-box"><div class="sci-label">Jehoul et al. (2023)</div><p>WhatsApp kan laagdrempelig zijn, maar stelt vragen over privacy en formele communicatie. Bellen via het schoolnummer is betrouwbaarder en professioneler als opvolgstap.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Niet fout, maar niet de sterkste keuze als opvolging.</strong></p>`
+  },
+  huisbezoek: {
+    cls:'oc-orange', icon:'🏠',
+    title:'Huisbezoek — heel betrokken, maar ook heel intrusief.',
+    subtitle:'Een huisbezoek zonder aankondiging kan voelen als een inval in de privésfeer.',
+    body:`<div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Huisbezoeken kunnen waardevol zijn — maar pas na duidelijke communicatie en met toestemming. Als eerste opvolgstap na een mail kan het overweldigend en grensoverschrijdend aanvoelen.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goed bedoeld — maar bellen is een logischere tussenstap.</strong></p>`
+  },
+  ankerpersoon2: {
+    cls:'oc-red', icon:'😵',
+    title:'Nog te vroeg voor de ankerpersoon.',
+    subtitle:'Je hebt de mail gestuurd, maar nog niet gebeld. Er is nog een stap die jij zelf kan zetten.',
+    body:`<div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>De ankerpersoon is er voor als jij het zelf niet meer kan oplossen — na een warm bericht én na een telefoontje. Sla geen stappen over.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Eerst bellen — dan pas doorschakelen.</strong></p>`
+  }
+};
+
+// ══ SCREEN NAV ══
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const lbl = document.getElementById('currentScreenLabel');
+  if (lbl) lbl.textContent = screenNames[id] || id;
+  if (id === 's3') renderR1();
+  if (id === 's6') startCallAnimation();
+}
+
+// ══ RENDER RONDE 1 GEVOLG ══
+function renderR1() {
+  const v = getVote1();
+  const c = document.getElementById('outcome-r1');
+  if (!v || !outcomes1[v]) { c.innerHTML = '<div class="waiting-screen"><div class="big-icon">🤔</div><h2>Geen keuze geregistreerd.</h2></div>'; return; }
+  const o = outcomes1[v];
+  c.innerHTML = `<div class="outcome-block ${o.cls}"><div class="outcome-head"><span class="o-icon">${o.icon}</span><div><h3>${o.title}</h3><p>${o.subtitle}</p></div></div><div class="outcome-foot">${o.body}</div></div>`;
+}
+
+// ══ VOTING RONDE 1 ══
+function vote1(choice) {
+  if (getVote1()) return;
+  setVote1(choice);
+  // Increment vote counter in Firebase
+  db.ref(`votes/${choice}`).transaction(cur => (cur || 0) + 1);
+  document.querySelectorAll('#s1 .choice-btn').forEach(b => b.classList.add('disabled'));
+  const el = document.getElementById('r1-' + choice);
+  if (el) { el.classList.remove('disabled'); el.classList.add('selected'); }
+  setTimeout(() => showScreen('s2'), 500);
+}
+
+// ══ VOTING RONDE 2 ══
+function vote2(choice) {
+  if (getVote2()) return;
+  setVote2(choice);
+  document.querySelectorAll('#s4 .choice-btn').forEach(b => b.classList.add('disabled'));
+  const idMap = { bellen2:'r2-bellen', whatsapp:'r2-whatsapp', huisbezoek:'r2-huisbezoek', ankerpersoon2:'r2-ankerpersoon' };
+  const el = document.getElementById(idMap[choice]);
+  if (el) { el.classList.remove('disabled'); el.classList.add('selected'); }
+  setTimeout(() => showScreen('s5'), 500);
+}
+
+// ══ VOTING RONDE 3 ══
+function vote3(choice) {
+  document.querySelectorAll('#s7 .choice-btn').forEach(b => b.classList.add('disabled'));
+  setTimeout(() => showScreen('s8'), 500);
+}
+
+// ══ BEL ANIMATIE ══
+function startCallAnimation() {
+  // Reset UI
+  document.getElementById('call-result').style.display = 'none';
+  document.getElementById('call-card').style.display = 'block';
+  document.getElementById('call-rings').style.display = 'flex';
+  document.getElementById('call-status-text').textContent = 'Verbinding wordt gemaakt…';
+  document.getElementById('call-timer-label').textContent = 'Bellen…';
+  const bar = document.getElementById('call-timer-bar');
+  bar.style.transition = 'none';
+  bar.style.width = '0%';
+
+  // Determine outcome from Firebase (set by admin via startBelRonde)
+  const outcome = window._callOutcome || 'fail';
+
+  setTimeout(() => {
+    bar.style.transition = 'width 3s linear';
+    bar.style.width = '100%';
+    document.getElementById('call-status-text').textContent = 'Telefoon gaat over…';
+  }, 300);
+
+  setTimeout(() => {
+    document.getElementById('call-rings').style.display = 'none';
+    if (outcome === 'success') {
+      document.getElementById('call-status-text').textContent = '✅ Opgenomen!';
+      showCallResult('success');
+    } else {
+      document.getElementById('call-status-text').textContent = '📵 Geen gehoor.';
+      showCallResult('fail');
+    }
+  }, 3500);
+}
+
+function showCallResult(type) {
+  const r = document.getElementById('call-result');
+  r.style.display = 'block';
+
+  // Check what they chose in ronde 2 — if not bellen2, show the non-bellen outcome first
+  const v2 = getVote2();
+  if (v2 && v2 !== 'bellen2' && outcomes2[v2]) {
+    const o = outcomes2[v2];
+    r.innerHTML = `<div class="outcome-block ${o.cls}"><div class="outcome-head"><span class="o-icon">${o.icon}</span><div><h3>${o.title}</h3><p>${o.subtitle}</p></div></div><div class="outcome-foot">${o.body}</div></div>
+    <div style="background:#F0FDF4;border-radius:12px;padding:14px 16px;border:1px solid #86EFAC;font-size:.88rem;color:#14532D;margin-top:4px;">
+      💡 <strong>Maar stel dat je wél gebeld had…</strong> Dan was dit het resultaat geweest:
+    </div>`;
+  }
+
+  if (type === 'success') {
+    r.innerHTML += `<div class="outcome-block oc-green" style="margin-top:12px;">
+      <div class="outcome-head"><span class="o-icon">🎉</span><div><h3>Opgenomen! Afspraak gemaakt.</h3><p>"We komen volgende week langs." — Contact gelukt.</p></div></div>
+      <div class="outcome-foot">
+        <div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel als opvolging van mijn mail…</div><div class="bbl-in" style="font-size:.72rem;">Ah ja! We komen volgende week langs.</div><div class="bbl-status">✓✓</div></div></div></div></div>
+        <div class="sci-box"><div class="sci-label">Hill & Tyson (2009) · Epstein (2011)</div><p>Warm bericht als basis, dan bellen als opvolging — dit is precies de aanpak die de literatuur aanbeveelt. Jij zat in de gelukkige 40%.</p></div>
+        <p><strong style="color:var(--green);">✓ Stappenplan werkt. Jij zat in de 40% met geluk.</strong></p>
+      </div>
+    </div>`;
+  } else {
+    r.innerHTML += `<div class="outcome-block oc-red" style="margin-top:12px;">
+      <div class="outcome-head"><span class="o-icon">📵</span><div><h3>Niemand neemt op.</h3><p>Je zit in de 60%. Taalbarrière, geen tijd, wantrouwen — het kan van alles zijn.</p></div></div>
+      <div class="outcome-foot">
+        <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>60% van de gevallen lukt het niet via telefoon alleen. Dit is normaal — en het stappenplan houdt hier rekening mee. Nu is de ankerpersoon écht aan zet.</p></div>
+        <p style="color:var(--teal);font-weight:600;margin-top:8px;font-size:.88rem;">→ De simulatie gaat verder naar de laatste stap…</p>
+      </div>
+    </div>`;
+  }
+}
+
+// ══ BROADCAST ══
+function broadcast(id) {
+  db.ref('state').set(id);
+  showScreen(id);
+}
+
+function startBelRonde() {
+  const outcome = Math.random() < 0.4 ? 'success' : 'fail';
+  db.ref('callOutcome').set(outcome);
+  broadcast('s6');
+}
+
+function broadcastReset() {
+  db.ref('state').remove();
+  db.ref('votes').remove();
+  db.ref('callOutcome').remove();
+  sessionStorage.clear();
+  document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('disabled','selected'));
+  showScreen('s1');
+}
+
+// ══ STATS — live from Firebase ══
+function updateStats(votes) {
+  const keys = ['bellen','mail-slecht','mail-goed','ankerpersoon'];
+  const v = votes || {};
+  const total = keys.reduce((a,k) => a + (v[k]||0), 0);
+  keys.forEach(k => {
+    const ce = document.getElementById('st-'+k);
+    const pe = document.getElementById('sp-'+k);
+    if (ce) ce.textContent = v[k]||0;
+    if (pe) pe.textContent = total > 0 ? Math.round((v[k]||0)/total*100)+'%' : '—';
+  });
+  const te = document.getElementById('totalVotes1');
+  if (te) te.textContent = `Totaal: ${total} stem${total!==1?'men':''}`;
+}
+
+// ══ LOGIN ══
+function openLoginModal() {
+  document.getElementById('loginModal').style.display = 'flex';
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginError').style.display = 'none';
+  setTimeout(() => document.getElementById('loginUser').focus(), 100);
+}
+function closeLoginModal() { document.getElementById('loginModal').style.display = 'none'; }
+function doLogin() {
+  const u = document.getElementById('loginUser').value.trim();
+  const p = document.getElementById('loginPass').value.trim();
+  if (u === 'admin' && p === 'admin123') { closeLoginModal(); openAdmin(); }
+  else { document.getElementById('loginError').style.display = 'block'; document.getElementById('loginPass').value = ''; }
+}
+function openAdmin() {
+  document.getElementById('adminPanel').classList.add('open');
+  db.ref('state').once('value').then(s => {
+    const lbl = document.getElementById('currentScreenLabel');
+    if (lbl) lbl.textContent = screenNames[s.val()] || 'Wachtscherm';
+  });
+}
+function closeAdmin() { document.getElementById('adminPanel').classList.remove('open'); }
+
+// ══ REALTIME LISTENERS ══
+db.ref('state').on('value', snap => {
+  const id = snap.val() || 's1';
+  const current = document.querySelector('.screen.active');
+  if (!current || current.id !== id) showScreen(id);
+});
+
+db.ref('callOutcome').on('value', snap => {
+  window._callOutcome = snap.val();
+});
+
+db.ref('votes').on('value', snap => {
+  updateStats(snap.val() || {});
+});
+
+// ══ INIT ══
+sessionStorage.clear();
+showScreen('s1');
+</script>
+
+</body>
+</html>
