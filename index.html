@@ -317,6 +317,11 @@
   </div>
 </div>
 
+<!-- ══ S6R2: PERSOONLIJK GEVOLG RONDE 2 ══ -->
+<div class="screen" id="s6r2">
+  <div id="outcome-r2"></div>
+</div>
+
 <!-- ══ S6: BEL ANIMATIE + RANDOM UITKOMST ══ -->
 <div class="screen" id="s6">
   <div class="round-badge">📞 Je hebt gebeld…</div>
@@ -487,11 +492,21 @@
 
     <div class="admin-section-title">🔄 Ronde 2 — Opvolging (alleen voor wie laagdrempelig mailde)</div>
     <div class="note-box">💡 Start ronde 2 alleen als je de groep wil meenemen in de opvolgingsstap. De juiste keuze is bellen — met een random uitkomst van 40/60.</div>
+
+    <div class="stats-row">
+      <div class="stat-card"><div class="s-icon">📞</div><div class="s-count" id="st2-bellen2">0</div><div class="s-label">Bellen</div><div class="s-pct" id="sp2-bellen2">—</div></div>
+      <div class="stat-card"><div class="s-icon">💚</div><div class="s-count" id="st2-whatsapp">0</div><div class="s-label">WhatsApp</div><div class="s-pct" id="sp2-whatsapp">—</div></div>
+      <div class="stat-card"><div class="s-icon">🏠</div><div class="s-count" id="st2-huisbezoek">0</div><div class="s-label">Huisbezoek</div><div class="s-pct" id="sp2-huisbezoek">—</div></div>
+      <div class="stat-card"><div class="s-icon">🧑‍💼</div><div class="s-count" id="st2-ankerpersoon2">0</div><div class="s-label">Anker</div><div class="s-pct" id="sp2-ankerpersoon2">—</div></div>
+    </div>
+    <p style="color:rgba(255,255,255,.3); font-size:.75rem; margin-bottom:8px;" id="totalVotes2">Totaal: 0 stemmen</p>
+
     <div class="bc-grid">
       <button class="bc-btn bc-r2" onclick="broadcast('s4')"><span class="bc-icon">📬</span><span class="bc-title">④ Ronde 2 — Kies opvolging</span><span class="bc-sub">Geen reactie na mail</span></button>
       <button class="bc-btn bc-wait" onclick="broadcast('s5')"><span class="bc-icon">⏳</span><span class="bc-title">⑤ Wachten R2</span><span class="bc-sub">Terwijl jij uitlegt</span></button>
-      <button class="bc-btn bc-show" onclick="startBelRonde()"><span class="bc-icon">📞</span><span class="bc-title">⑥ Start belanimatie</span><span class="bc-sub">40% opnemen / 60% niet</span></button>
-      <button class="bc-btn bc-r2" onclick="broadcast('s7')"><span class="bc-icon">📵</span><span class="bc-title">⑦ Geen gehoor → R3</span><span class="bc-sub">Ankerpersoon als laatste stap</span></button>
+      <button class="bc-btn bc-show" onclick="broadcast('s6r2')"><span class="bc-icon">✨</span><span class="bc-title">⑥ Toon gevolg R2</span><span class="bc-sub">Persoonlijk resultaat ronde 2</span></button>
+      <button class="bc-btn bc-show" onclick="startBelRonde()"><span class="bc-icon">📞</span><span class="bc-title">⑦ Start belanimatie</span><span class="bc-sub">40% opnemen / 60% niet</span></button>
+      <button class="bc-btn bc-r2" onclick="broadcast('s7')"><span class="bc-icon">📵</span><span class="bc-title">⑧ Geen gehoor → R3</span><span class="bc-sub">Ankerpersoon als laatste stap</span></button>
     </div>
 
     <div class="admin-section-title">🏁 Eindschermen</div>
@@ -587,8 +602,9 @@ function showScreen(id) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
   const lbl = document.getElementById('currentScreenLabel');
   if (lbl) lbl.textContent = screenNames[id] || id;
-  if (id === 's3') renderR1();
-  if (id === 's6') startCallAnimation();
+  if (id === 's3')   renderR1();
+  if (id === 's6r2') renderR2();
+  if (id === 's6')   startCallAnimation();
 }
 
 // ══ RENDER RONDE 1 GEVOLG ══
@@ -616,11 +632,29 @@ function vote1(choice) {
 function vote2(choice) {
   if (getVote2()) return;
   setVote2(choice);
+  db.ref(`votes2/${choice}`).transaction(cur => (cur || 0) + 1);
   document.querySelectorAll('#s4 .choice-btn').forEach(b => b.classList.add('disabled'));
   const idMap = { bellen2:'r2-bellen', whatsapp:'r2-whatsapp', huisbezoek:'r2-huisbezoek', ankerpersoon2:'r2-ankerpersoon' };
   const el = document.getElementById(idMap[choice]);
   if (el) { el.classList.remove('disabled'); el.classList.add('selected'); }
   setTimeout(() => showScreen('s5'), 500);
+}
+
+// ══ RENDER RONDE 2 GEVOLG ══
+function renderR2() {
+  const v = getVote2();
+  const c = document.getElementById('outcome-r2');
+  if (!v) {
+    c.innerHTML = '<div class="waiting-screen"><div class="big-icon">🤔</div><h2>Je had nog niet gestemd in ronde 2.</h2></div>';
+    return;
+  }
+  if (v === 'bellen2') {
+    c.innerHTML = `<div class="outcome-block oc-green"><div class="outcome-head"><span class="o-icon">✅</span><div><h3>Juiste keuze!</h3><p>Bellen is de logische opvolgstap na een laagdrempelige mail. De belanimatie volgt zo meteen.</p></div></div><div class="outcome-foot"><div class="sci-box"><div class="sci-label">Hill & Tyson (2009) · Epstein (2011)</div><p>Warm bericht als basis, dan persoonlijk bellen als opvolging — dit is precies de aanpak die de literatuur aanbeveelt.</p></div><p><strong style="color:var(--green)">✓ Goed gedaan — de belanimatie start zo meteen.</strong></p></div></div>`;
+    return;
+  }
+  const o = outcomes2[v];
+  if (!o) return;
+  c.innerHTML = `<div class="outcome-block ${o.cls}"><div class="outcome-head"><span class="o-icon">${o.icon}</span><div><h3>${o.title}</h3><p>${o.subtitle}</p></div></div><div class="outcome-foot">${o.body}</div></div>`;
 }
 
 // ══ VOTING RONDE 3 ══
@@ -711,6 +745,7 @@ function startBelRonde() {
 function broadcastReset() {
   db.ref('state').remove();
   db.ref('votes').remove();
+  db.ref('votes2').remove();
   db.ref('callOutcome').remove();
   sessionStorage.clear();
   document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('disabled','selected'));
@@ -756,7 +791,20 @@ function openAdmin() {
 }
 function closeAdmin() { document.getElementById('adminPanel').classList.remove('open'); }
 
-// ══ REALTIME LISTENERS ══
+// ══ STATS RONDE 2 ══
+function updateStats2(votes) {
+  const keys = ['bellen2','whatsapp','huisbezoek','ankerpersoon2'];
+  const v = votes || {};
+  const total = keys.reduce((a,k) => a + (v[k]||0), 0);
+  keys.forEach(k => {
+    const ce = document.getElementById('st2-'+k);
+    const pe = document.getElementById('sp2-'+k);
+    if (ce) ce.textContent = v[k]||0;
+    if (pe) pe.textContent = total > 0 ? Math.round((v[k]||0)/total*100)+'%' : '—';
+  });
+  const te = document.getElementById('totalVotes2');
+  if (te) te.textContent = `Totaal: ${total} stem${total!==1?'men':''}`;
+}
 db.ref('state').on('value', snap => {
   const id = snap.val() || 's1';
   const current = document.querySelector('.screen.active');
@@ -769,6 +817,10 @@ db.ref('callOutcome').on('value', snap => {
 
 db.ref('votes').on('value', snap => {
   updateStats(snap.val() || {});
+});
+
+db.ref('votes2').on('value', snap => {
+  updateStats2(snap.val() || {});
 });
 
 // ══ INIT ══
