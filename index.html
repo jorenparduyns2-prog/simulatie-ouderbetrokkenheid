@@ -480,6 +480,12 @@
       <div class="stat-card"><div class="s-icon">💬</div><div class="s-count" id="st-mail-goed">0</div><div class="s-label">Laagdrempelig</div><div class="s-pct" id="sp-mail-goed">—</div></div>
       <div class="stat-card"><div class="s-icon">🧑‍💼</div><div class="s-count" id="st-ankerpersoon">0</div><div class="s-label">Anker</div><div class="s-pct" id="sp-ankerpersoon">—</div></div>
     </div>
+
+    <!-- Donut chart R1 -->
+    <div style="display:flex; align-items:center; gap:24px; background:#1e293b; border-radius:14px; padding:16px 20px; margin:10px 0 4px;">
+      <canvas id="chart-r1" width="130" height="130" style="flex-shrink:0;"></canvas>
+      <div id="legend-r1" style="display:flex; flex-direction:column; gap:8px; flex:1;"></div>
+    </div>
     <p style="color:rgba(255,255,255,.3); font-size:.75rem; margin-bottom:4px;" id="totalVotes1">Totaal: 0 stemmen</p>
 
     <div class="admin-section-title">🎯 Schermen besturen — Ronde 1</div>
@@ -498,6 +504,12 @@
       <div class="stat-card"><div class="s-icon">💚</div><div class="s-count" id="st2-whatsapp">0</div><div class="s-label">WhatsApp</div><div class="s-pct" id="sp2-whatsapp">—</div></div>
       <div class="stat-card"><div class="s-icon">🏠</div><div class="s-count" id="st2-huisbezoek">0</div><div class="s-label">Huisbezoek</div><div class="s-pct" id="sp2-huisbezoek">—</div></div>
       <div class="stat-card"><div class="s-icon">🧑‍💼</div><div class="s-count" id="st2-ankerpersoon2">0</div><div class="s-label">Anker</div><div class="s-pct" id="sp2-ankerpersoon2">—</div></div>
+    </div>
+
+    <!-- Donut chart R2 -->
+    <div style="display:flex; align-items:center; gap:24px; background:#1e293b; border-radius:14px; padding:16px 20px; margin:10px 0 4px;">
+      <canvas id="chart-r2" width="130" height="130" style="flex-shrink:0;"></canvas>
+      <div id="legend-r2" style="display:flex; flex-direction:column; gap:8px; flex:1;"></div>
     </div>
     <p style="color:rgba(255,255,255,.3); font-size:.75rem; margin-bottom:8px;" id="totalVotes2">Totaal: 0 stemmen</p>
 
@@ -765,6 +777,7 @@ function updateStats(votes) {
   });
   const te = document.getElementById('totalVotes1');
   if (te) te.textContent = `Totaal: ${total} stem${total!==1?'men':''}`;
+  drawDonut('chart-r1', 'legend-r1', keys.map(k => ({ value: v[k]||0, ...COLORS_R1[k] })));
 }
 
 // ══ LOGIN ══
@@ -791,7 +804,91 @@ function openAdmin() {
 }
 function closeAdmin() { document.getElementById('adminPanel').classList.remove('open'); }
 
-// ══ STATS RONDE 2 ══
+// ══ DONUT CHART ══
+function drawDonut(canvasId, legendId, data) {
+  const canvas = document.getElementById(canvasId);
+  const legend = document.getElementById(legendId);
+  if (!canvas || !legend) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const outerR = Math.min(W, H) / 2 - 4;
+  const innerR = outerR * 0.58;
+  const total = data.reduce((a, d) => a + d.value, 0);
+
+  ctx.clearRect(0, 0, W, H);
+
+  if (total === 0) {
+    // Empty state ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, outerR, 0, Math.PI * 2);
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2, true);
+    ctx.fillStyle = 'rgba(255,255,255,.08)';
+    ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.25)';
+    ctx.font = `bold ${Math.round(outerR * 0.35)}px Syne, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('0', cx, cy);
+    legend.innerHTML = data.map(d => `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:${d.color};flex-shrink:0;"></span>
+        <span style="font-size:.78rem;color:rgba(255,255,255,.5);">${d.icon} ${d.label}</span>
+        <span style="margin-left:auto;font-size:.78rem;color:rgba(255,255,255,.3);">0</span>
+      </div>`).join('');
+    return;
+  }
+
+  // Draw segments
+  let startAngle = -Math.PI / 2;
+  const gap = 0.04;
+  data.forEach(d => {
+    if (d.value === 0) return;
+    const slice = (d.value / total) * (Math.PI * 2 - gap * data.filter(x => x.value > 0).length);
+    ctx.beginPath();
+    ctx.moveTo(cx + innerR * Math.cos(startAngle), cy + innerR * Math.sin(startAngle));
+    ctx.arc(cx, cy, outerR, startAngle, startAngle + slice);
+    ctx.arc(cx, cy, innerR, startAngle + slice, startAngle, true);
+    ctx.closePath();
+    ctx.fillStyle = d.color;
+    ctx.fill();
+    startAngle += slice + gap;
+  });
+
+  // Center total
+  ctx.fillStyle = '#fff';
+  ctx.font = `bold ${Math.round(outerR * 0.38)}px Syne, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(total, cx, cy - 6);
+  ctx.font = `${Math.round(outerR * 0.22)}px DM Sans, sans-serif`;
+  ctx.fillStyle = 'rgba(255,255,255,.45)';
+  ctx.fillText('stemmen', cx, cy + outerR * 0.28);
+
+  // Legend
+  legend.innerHTML = data.map(d => {
+    const pct = total > 0 ? Math.round(d.value / total * 100) : 0;
+    return `
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="width:10px;height:10px;border-radius:50%;background:${d.color};flex-shrink:0;opacity:${d.value > 0 ? 1 : 0.3};"></span>
+        <span style="font-size:.8rem;color:rgba(255,255,255,${d.value > 0 ? '.8' : '.35'});">${d.icon} ${d.label}</span>
+        <span style="margin-left:auto;font-size:.8rem;font-weight:700;color:${d.value > 0 ? d.color : 'rgba(255,255,255,.2)'};">${d.value > 0 ? pct + '%' : '—'}</span>
+      </div>`;
+  }).join('');
+}
+
+const COLORS_R1 = {
+  bellen:       { color: '#028090', icon: '📞', label: 'Bellen' },
+  'mail-slecht':{ color: '#E63946', icon: '✉️',  label: 'Formele mail' },
+  'mail-goed':  { color: '#2D9E6B', icon: '💬', label: 'Laagdrempelig' },
+  ankerpersoon: { color: '#F4A261', icon: '🧑‍💼', label: 'Ankerpersoon' },
+};
+const COLORS_R2 = {
+  bellen2:       { color: '#028090', icon: '📞', label: 'Bellen' },
+  whatsapp:      { color: '#25D366', icon: '💚', label: 'WhatsApp' },
+  huisbezoek:    { color: '#F4A261', icon: '🏠', label: 'Huisbezoek' },
+  ankerpersoon2: { color: '#E63946', icon: '🧑‍💼', label: 'Ankerpersoon' },
+};
 function updateStats2(votes) {
   const keys = ['bellen2','whatsapp','huisbezoek','ankerpersoon2'];
   const v = votes || {};
@@ -804,6 +901,7 @@ function updateStats2(votes) {
   });
   const te = document.getElementById('totalVotes2');
   if (te) te.textContent = `Totaal: ${total} stem${total!==1?'men':''}`;
+  drawDonut('chart-r2', 'legend-r2', keys.map(k => ({ value: v[k]||0, ...COLORS_R2[k] })));
 }
 db.ref('state').on('value', snap => {
   const id = snap.val() || 's1';
