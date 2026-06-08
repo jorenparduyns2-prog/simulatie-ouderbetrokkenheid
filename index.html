@@ -214,7 +214,7 @@
   <div class="logo-bar"></div>
   <div>
     <h1>Simulatie — Ouderbetrokkenheid</h1>
-    <span>School De Prins · 2de graad Arbeidsfinaliteit</span>
+    <span>Schoolbrede opdracht Joren Parduyns</span>
   </div>
   <button class="admin-btn-header" onclick="openLoginModal()">⚙ Admin</button>
 </header>
@@ -258,7 +258,7 @@
       <span class="c-text"><strong>Ankerpersoon inschakelen</strong><small>Je speelt de situatie door naar de schoolschakel.</small></span>
     </button>
   </div>
-  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;">Joren beslist wanneer jullie verder gaan.</p>
+  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;display:none;"></p>
 </div>
 
 <!-- ══ S2: WACHT NA RONDE 1 ══ -->
@@ -292,7 +292,7 @@
       <span class="c-text"><strong>Persoonlijk opbellen</strong><small>Toch maar de telefoon nemen.</small></span>
     </button>
     <button class="choice-btn" onclick="vote2('whatsapp')" id="r2-whatsapp">
-      <span class="c-icon">💚</span>
+      <span class="c-icon"><svg width="22" height="22" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="24" fill="#25D366"/><path d="M24 8C15.2 8 8 15.2 8 24c0 2.9.8 5.6 2.1 8L8 40l8.3-2.1c2.3 1.2 4.9 1.9 7.7 1.9 8.8 0 16-7.2 16-16S32.8 8 24 8zm8.2 22.1c-.3.9-1.8 1.7-2.5 1.8-.6.1-1.4.1-2.3-.1-.5-.1-1.2-.4-2-.7-3.5-1.5-5.8-5-6-5.3-.1-.2-1.2-1.6-1.2-3s.8-2.2 1-2.5c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5.3.6 1 2.3 1.1 2.5.1.2.2.4.1.7-.1.2-.2.4-.4.6-.2.2-.3.4-.5.6-.1.2-.3.4-.1.8.2.4.9 1.5 2 2.4 1.4 1.2 2.5 1.6 2.9 1.7.4.2.6.1.8-.1.2-.2.9-1 1.1-1.4.2-.4.5-.3.8-.2.3.1 2 .9 2.3 1.1.3.2.5.3.6.4.1.4-.2 1.6-.5 2.5z" fill="#fff"/></svg></span>
       <span class="c-text"><strong>WhatsApp sturen</strong><small>Kort berichtje via hun vertrouwde app.</small></span>
     </button>
     <button class="choice-btn" onclick="vote2('huisbezoek')" id="r2-huisbezoek">
@@ -304,7 +304,7 @@
       <span class="c-text"><strong>Ankerpersoon inschakelen</strong><small>Nu doorspelen naar de schoolschakel.</small></span>
     </button>
   </div>
-  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;">Joren beslist wanneer jullie verder gaan.</p>
+
 </div>
 
 <!-- ══ S5: WACHT NA RONDE 2 ══ -->
@@ -326,19 +326,49 @@
 <div class="screen" id="s6">
   <div class="round-badge">📞 Je hebt gebeld…</div>
 
-  <div class="call-card" id="call-card">
-    <div class="call-avatar">👨‍👩‍👦</div>
-    <div class="call-name">Ouders van Rayan A.</div>
-    <div class="call-status" id="call-status-text">Verbinding wordt gemaakt…</div>
-    <div class="call-rings" id="call-rings">
-      <div class="ring-dot"></div>
-      <div class="ring-dot"></div>
-      <div class="ring-dot"></div>
-      <div class="ring-dot"></div>
-    </div>
-    <div class="timer-wrap">
-      <div class="timer-label" id="call-timer-label">Bellen…</div>
-      <div class="timer-bar-bg"><div class="timer-bar-fill" id="call-timer-bar"></div></div>
+  <div class="phone-wrap" style="margin: 24px 0;">
+    <div class="phone" style="width:260px;">
+      <div class="phone-notch"><div class="phone-pill"></div></div>
+      <div class="phone-screen" style="background:#1a1a2e; min-height:380px; display:flex; flex-direction:column; align-items:center; padding:24px 16px 20px; gap:0;">
+        <div style="font-size:.72rem; color:rgba(255,255,255,.4); margin-bottom:16px; letter-spacing:.08em;" id="call-network">School De Prins</div>
+        <div style="width:72px;height:72px;background:linear-gradient(135deg,#028090,#00A896);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;margin-bottom:14px;">👨‍👩‍👦</div>
+        <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;color:#fff;margin-bottom:4px;">Ouders van Rayan A.</div>
+        <div style="font-size:.82rem;color:rgba(255,255,255,.5);margin-bottom:20px;" id="call-status-text">Verbinding wordt gemaakt…</div>
+
+        <!-- Animated rings -->
+        <div id="call-rings" style="display:flex;gap:10px;margin-bottom:20px;">
+          <div class="ring-dot"></div>
+          <div class="ring-dot"></div>
+          <div class="ring-dot"></div>
+          <div class="ring-dot"></div>
+        </div>
+
+        <div style="font-size:.75rem;color:rgba(255,255,255,.35);margin-bottom:16px;" id="call-timer-label">Bellen…</div>
+        <div style="width:100%;background:rgba(255,255,255,.1);border-radius:100px;height:4px;margin-bottom:28px;">
+          <div id="call-timer-bar" style="height:100%;border-radius:100px;background:linear-gradient(90deg,#028090,#00A896);width:0%;transition:width 3s linear;"></div>
+        </div>
+
+        <!-- Phone buttons -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;width:100%;padding:0 8px;">
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:44px;height:44px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🔇</div>
+            <span style="font-size:.6rem;color:rgba(255,255,255,.4);">Dempen</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:44px;height:44px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">⌨️</div>
+            <span style="font-size:.6rem;color:rgba(255,255,255,.4);">Toetsen</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="width:44px;height:44px;background:rgba(255,255,255,.12);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🔊</div>
+            <span style="font-size:.6rem;color:rgba(255,255,255,.4);">Speaker</span>
+          </div>
+        </div>
+
+        <!-- Red hang-up button -->
+        <div style="margin-top:24px;">
+          <div style="width:60px;height:60px;background:#E63946;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;transform:rotate(135deg);">📞</div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -354,12 +384,12 @@
       <span class="o-icon">📵</span>
       <div>
         <h3>Niemand neemt op.</h3>
-        <p>Je hebt twee keer gebeld. Geen gehoor — of er is een taalbarrière die het gesprek onmogelijk maakt.</p>
+        <p>Je hebt gebeld maar krijgt geen gehoor — taalbarrière, werkuren, of gewoon geen vertrouwen in een onbekend nummer.</p>
       </div>
     </div>
     <div class="outcome-foot">
       <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div>
-      <p>60% van de gevallen werkt telefonisch contact niet meteen. Taalbarrières, wisselende werkroosters, wantrouwen — er zijn veel redenen. Dit is normaal, en het stappenplan houdt hier rekening mee.</p></div>
+      <p>Walker et al. beschrijven taalbarrières, wisselende werkroosters en een gevoel van niet welkom zijn als structurele drempels. Telefonisch contact lukt niet altijd — dat hoort bij de realiteit van deze doelgroep.</p></div>
     </div>
   </div>
 
@@ -375,7 +405,7 @@
       <span class="c-text"><strong>Ankerpersoon inschakelen</strong><small>Nu is het écht de juiste stap — jij hebt alles geprobeerd.</small></span>
     </button>
   </div>
-  <p style="font-size:.78rem;color:var(--muted);text-align:center;margin-top:20px;font-style:italic;">Joren beslist wanneer jullie verder gaan.</p>
+
 </div>
 
 <!-- ══ S8: EINDSCHERM ANKERPERSOON SUCCES ══ -->
@@ -397,16 +427,16 @@
           <div class="phone-screen">
             <div class="app-header"><span>💬 Ankerpersoon · Ouders Rayan</span></div>
             <div class="bubble-wrap">
-              <div class="bbl-out" style="font-size:.71rem;">Merhaba, ik ben de ankerpersoon van school…</div>
-              <div class="bbl-in" style="font-size:.71rem;">Bedankt. We komen volgende week langs.</div>
+              <div class="bbl-out" style="font-size:.71rem;">Dag, ik bel namens school over Rayan. Kunnen we even praten?</div>
+              <div class="bbl-in" style="font-size:.71rem;">Ja, bedankt dat jullie bellen. We komen volgende week langs.</div>
               <div class="bbl-status">✓✓ gelezen</div>
             </div>
           </div>
         </div>
       </div>
-      <div class="sci-box"><div class="sci-label">Jehoul et al. (2023) · Epstein (2011)</div>
-      <p>De ankerpersoon als schakel voor taalbarrières is precies waarvoor deze rol bedoeld is — ná de pogingen van de leerkracht. Je hebt het stappenplan correct doorlopen.</p></div>
-      <p><strong style="color:var(--green)">✓ Je hebt het volledig stappenplan doorlopen. Dit is hoe het werkt.</strong></p>
+      <div class="sci-box"><div class="sci-label">Jehoul et al. (2023) · Walker et al. (2005)</div>
+      <p>Jehoul et al. benadrukken dat toegankelijke communicatie — aangepast aan de taal en context van het gezin — de sleutel is bij diverse populaties. Walker et al. beschrijven hoe een expliciete uitnodiging vanuit school een van de sterkste factoren is voor ouderbetrokkenheid.</p></div>
+      <p><strong style="color:var(--green)">✓ Je hebt het volledige stappenplan doorlopen. Dit is hoe het werkt.</strong></p>
     </div>
   </div>
 
@@ -419,23 +449,44 @@
 <!-- ══ S9: VOLLEDIG OVERZICHT (admin) ══ -->
 <div class="screen" id="s9">
   <div class="section-title">Alle uitkomsten</div>
-  <div class="section-sub">Zo had elke keuze kunnen eindigen.</div>
+  <div class="section-sub">Ronde 1 & 2 — zo had elke keuze kunnen eindigen.</div>
+
+  <p style="font-size:.82rem;font-weight:700;color:var(--teal);margin-bottom:10px;text-transform:uppercase;letter-spacing:.08em;">Ronde 1 — Eerste aanpak</p>
 
   <div class="outcome-block oc-orange">
-    <div class="outcome-head"><span class="o-icon">😬</span><div><h3>📞 Bellen (eerste stap)</h3><p>"Waarom belt u zomaar? Had u niet eerst een berichtje kunnen sturen?"</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Een uitnodigende schoolcultuur begint met warme, laagdrempelige communicatie. Een onverwacht telefoontje zonder voorafgaand contact past daar niet bij.</p></div></div>
+    <div class="outcome-head"><span class="o-icon">😬</span><div><h3>📞 Bellen als eerste stap</h3><p>"Waarom belt u zomaar? Had u niet eerst iets kunnen sturen?"</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>De manier van uitnodigen bepaalt of ouders zich welkom voelen. Een onverwacht telefoontje zonder voorafgaand contact past niet bij een warme aanpak.</p></div></div>
   </div>
   <div class="outcome-block oc-red">
-    <div class="outcome-head"><span class="o-icon">😤</span><div><h3>✉️ Formele mail</h3><p>"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld."</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Ouders die onderwijs als exclusieve verantwoordelijkheid van de school zien, reageren defensief op probleemgerichte communicatie. De relatie is beschadigd voor ze begonnen is.</p></div></div>
+    <div class="outcome-head"><span class="o-icon">😤</span><div><h3>✉️ Formele mail over het probleem</h3><p>"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld."</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemgerichte communicatie wekt weerstand. De ouder beschermt zijn kind — de relatie is beschadigd voor ze begonnen is.</p></div></div>
   </div>
   <div class="outcome-block oc-green">
-    <div class="outcome-head"><span class="o-icon">✅</span><div><h3>💬 Laagdrempelige mail → bellen → ankerpersoon</h3><p>Het volledige stappenplan. Warm bericht, opvolging, dan de juiste schakel.</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011) · Jehoul et al. (2023)</div><p>Kwaliteitsvolle betrokkenheid begint met een uitnodiging. Jehoul et al. benadrukken dat toegankelijke communicatie de drempel verlaagt, zeker bij diverse populaties.</p></div></div>
+    <div class="outcome-head"><span class="o-icon">✅</span><div><h3>💬 Laagdrempelige mail</h3><p>Ouder voelt zich niet aangevallen. De deur staat open. Nu doorlopen naar ronde 2.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011) · Jehoul et al. (2023)</div><p>Kwaliteitsvolle betrokkenheid begint met een warme uitnodiging. Toegankelijke communicatie verlaagt de drempel, zeker bij diverse populaties.</p></div></div>
   </div>
   <div class="outcome-block oc-red">
     <div class="outcome-head"><span class="o-icon">😵</span><div><h3>🧑‍💼 Meteen ankerpersoon</h3><p>De ankerpersoon heeft een burn-out als iedereen zo snel doorschakelt.</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein beschrijft de leerkracht als eerste actor in het partnerschap. De ankerpersoon is een extra schakel voor complexe situaties — niet als vervanging voor het eerste contact van de leerkracht zelf.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>De ankerpersoon is er voor complexe situaties nadat de leerkracht zelf stappen heeft gezet — niet als eerste reflex.</p></div></div>
+  </div>
+
+  <p style="font-size:.82rem;font-weight:700;color:var(--teal);margin:20px 0 10px;text-transform:uppercase;letter-spacing:.08em;">Ronde 2 — Opvolging na geen reactie op de mail</p>
+
+  <div class="outcome-block oc-green">
+    <div class="outcome-head"><span class="o-icon">📞</span><div><h3>Bellen als opvolging</h3><p>De juiste stap. Warm bericht gevolgd door persoonlijk telefonisch contact.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005) · Epstein (2011)</div><p>Een expliciete uitnodiging vanuit school is een van de sterkste factoren voor ouderbetrokkenheid. Proactief en persoonlijk contact maakt het verschil.</p></div></div>
+  </div>
+  <div class="outcome-block oc-orange">
+    <div class="outcome-head"><span class="o-icon">💬</span><div><h3>WhatsApp sturen</h3><p>Hangt af van het schoolreglement. Niet altijd het meest professionele kanaal.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Afhankelijk van het schoolreglement</div><p>Sommige scholen staan dit toe, andere niet. Bellen is een betrouwbaardere opvolgstap die voor iedereen werkt.</p></div></div>
+  </div>
+  <div class="outcome-block oc-orange">
+    <div class="outcome-head"><span class="o-icon">🏠</span><div><h3>Huisbezoek plannen</h3><p>Goed bedoeld maar te ingrijpend als eerste opvolgstap.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Een onaangekondigd huisbezoek kan de drempel verhogen in plaats van verlagen — het vergt vertrouwen dat nog niet is opgebouwd.</p></div></div>
+  </div>
+  <div class="outcome-block oc-red">
+    <div class="outcome-head"><span class="o-icon">🧑‍💼</span><div><h3>Ankerpersoon als opvolging</h3><p>Nog te vroeg — je hebt zelf nog niet gebeld.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>Eerst bellen, dan pas doorschakelen naar de ankerpersoon. Sla geen stappen over.</p></div></div>
   </div>
 
   <div class="highlight">
@@ -562,13 +613,13 @@ const outcomes1 = {
     cls:'oc-orange', icon:'😬',
     title:'Je hebt gebeld. Maar de ouders schrikken.',
     subtitle:'"Waarom belt u zomaar? Had u niet eerst een berichtje kunnen sturen?"',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel over Rayan, hij heeft al 3 weken zijn materiaal niet…</div><div class="bbl-in" style="font-size:.72rem;">Waarom belt u zomaar op? Had u niet eerst iets kunnen sturen?</div><div class="bbl-in" style="font-size:.72rem;background:#fff3e0;">Dit overvalt me een beetje.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Ouderbetrokkenheid is een gedeeld partnerschap waarbij uitnodiging en toon cruciaal zijn. Een onverwacht telefoontje zonder voorafgaand contact past niet bij een warme, uitnodigende schoolcultuur.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goede intentie, verkeerde volgorde.</strong></p>`
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel over Rayan, hij heeft al 3 weken zijn materiaal niet…</div><div class="bbl-in" style="font-size:.72rem;">Waarom belt u zomaar op? Had u niet eerst iets kunnen sturen?</div><div class="bbl-in" style="font-size:.72rem;background:#fff3e0;">Dit overvalt me een beetje.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Walker et al. beschrijven hoe de manier van uitnodigen bepaalt of ouders zich welkom voelen. Een onverwacht telefoontje zonder voorafgaand contact past niet bij een warme, uitnodigende aanpak — ouders associëren school dan met slecht nieuws.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goede intentie, verkeerde volgorde. Start met een warm bericht, dan bellen.</strong></p>`
   },
   'mail-slecht': {
     cls:'oc-red', icon:'😤',
     title:'De ouders schieten in de verdediging.',
     subtitle:'"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld, dat is jullie organisatie."',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Reactie ontvangen</span></div><div class="bubble-wrap"><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld."</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Verder geen reactie.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemtaal creëert weerstand. De ouder beschermt zijn kind — een natuurlijke reactie. Maar het gesprek is nu geblokkeerd.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ De relatie is beschadigd voor ze begonnen is.</strong></p>`
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Mail verzonden</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">"Beste ouders, Rayan brengt al 3 weken zijn materiaal niet mee. Dit is onaanvaardbaar en hindert zijn leerproces."</div><div style="font-size:.63rem;color:#aaa;text-align:right;margin-top:-4px;">Verzonden</div><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld."</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Verder geen reactie.</div></div></div></div></div><p style="font-size:.8rem;color:var(--muted);font-style:italic;margin-bottom:10px;">⬆ De mail vermeldde het probleem direct en beschuldigend.</p><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Walker et al. beschrijven hoe ouders die onderwijs als exclusieve schoolverantwoordelijkheid zien, defensief reageren op probleemgerichte communicatie. De ouder beschermt zijn kind — een natuurlijke reactie. Het gesprek is nu geblokkeerd.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ De relatie is beschadigd voor ze begonnen is.</strong></p>`
   },
   'mail-goed': {
     cls:'oc-green', icon:'✅',
@@ -580,7 +631,7 @@ const outcomes1 = {
     cls:'oc-red', icon:'😵',
     title:'De ankerpersoon heeft een burn-out.',
     subtitle:'Als elke leerkracht bij de minste twijfel doorschakelt, houdt niemand het vol.',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>💬 Berichten · Ankerpersoon</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">Kan jij contact opnemen met de ouders van Rayan?</div><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">Dit is al de 8ste vraag vandaag… Ik kan dit niet alleen aan.</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Status: 🔴 overbelast</div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein beschrijft ouderbetrokkenheid als een gedeelde verantwoordelijkheid waarbij de leerkracht zelf de eerste stap zet. De ankerpersoon is een schakel voor complexe situaties — niet voor elk eerste contactmoment.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Goed dat je hem kent — bewaar hem voor als het echt nodig is.</strong></p>`
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>💬 Berichten · Ankerpersoon</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">Kan jij contact opnemen met de ouders van Rayan?</div><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">Dit is al de 8ste vraag vandaag… Ik kan dit niet alleen aan.</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Status: 🔴 overbelast</div></div></div></div></div><div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>De ankerpersoon is een Vlaamse schoolpraktijk als schakel voor moeilijk bereikbare gezinnen. Deze rol is pas zinvol als de leerkracht zelf al een eerste poging deed — anders raakt de ankerpersoon overbelast en verliest de functie haar doel.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Goed dat je hem kent — bewaar hem voor als het echt nodig is.</strong></p>`
   }
 };
 
@@ -590,19 +641,19 @@ const outcomes2 = {
     cls:'oc-orange', icon:'💚',
     title:'WhatsApp — misschien handig, maar…',
     subtitle:'Niet alle ouders hebben jouw nummer. En privé-apps zijn geen officieel schoolkanaal.',
-    body:`<div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>WhatsApp kan laagdrempelig aanvoelen, maar is geen officieel schoolkanaal en stelt vragen over privacy en bereikbaarheid. Bellen via het schoolnummer is een professionelere en betrouwbaardere opvolgstap.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Niet fout, maar niet de sterkste keuze als opvolging.</strong></p>`
+    body:`<div class="sci-box"><div class="sci-label">Afhankelijk van het schoolreglement</div><p>Sommige scholen staan WhatsApp toe als informeel contactkanaal, andere niet. Het is geen officieel schoolkanaal en het gebruik ervan hangt af van de schoolvisie op communicatie en privacy. Bellen via het schoolnummer is een professionelere opvolgstap die voor iedereen werkt.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Niet fout, maar check eerst het schoolreglement — en bellen is sterker.</strong></p>`
   },
   huisbezoek: {
     cls:'oc-orange', icon:'🏠',
     title:'Huisbezoek — heel betrokken, maar ook heel intrusief.',
     subtitle:'Een huisbezoek zonder aankondiging kan voelen als een inval in de privésfeer.',
-    body:`<div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>Huisbezoeken kunnen waardevol zijn, maar vereisen voorbereiding en toestemming. Als eerste opvolgstap na een mail kan het overweldigend aanvoelen voor ouders die nog geen vertrouwensband hebben met school.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goed bedoeld — maar bellen is een logischere tussenstap.</strong></p>`
+    body:`<div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Walker et al. beschrijven hoe ouders die zich niet uitgenodigd voelen of structurele drempels ervaren, moeilijker bereikbaar zijn. Een onaangekondigd huisbezoek kan die drempel verhogen in plaats van verlagen — het vergt vertrouwen dat nog niet is opgebouwd.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goed bedoeld — maar bellen is een logischere en minder ingrijpende tussenstap.</strong></p>`
   },
   ankerpersoon2: {
     cls:'oc-red', icon:'😵',
     title:'Nog te vroeg voor de ankerpersoon.',
     subtitle:'Je hebt de mail gestuurd, maar nog niet gebeld. Er is nog een stap die jij zelf kan zetten.',
-    body:`<div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein beschrijft de leerkracht als eerste actor in het partnerschap met ouders. De ankerpersoon is een extra schakel voor complexe situaties — pas nadat de leerkracht zelf stappen heeft gezet.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Eerst bellen — dan pas doorschakelen.</strong></p>`
+    body:`<div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>De ankerpersoon is er voor complexe situaties waarbij de leerkracht zelf geen doorbraak bereikt. Sla geen stappen over — eerst bellen, dan pas doorschakelen naar de ankerpersoon.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Eerst bellen — dan pas doorschakelen.</strong></p>`
   }
 };
 
@@ -677,9 +728,7 @@ function vote3(choice) {
 
 // ══ BEL ANIMATIE ══
 function startCallAnimation() {
-  // Reset UI
   document.getElementById('call-result').style.display = 'none';
-  document.getElementById('call-card').style.display = 'block';
   document.getElementById('call-rings').style.display = 'flex';
   document.getElementById('call-status-text').textContent = 'Verbinding wordt gemaakt…';
   document.getElementById('call-timer-label').textContent = 'Bellen…';
@@ -687,7 +736,31 @@ function startCallAnimation() {
   bar.style.transition = 'none';
   bar.style.width = '0%';
 
-  // Determine outcome from Firebase (set by admin via startBelRonde)
+  // Beltoon via Web Audio API
+  let audioCtx = null;
+  let ringInterval = null;
+  function playRing() {
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      function beep(freq, start, dur) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.frequency.value = freq; osc.type = 'sine';
+        gain.gain.setValueAtTime(0, audioCtx.currentTime + start);
+        gain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + start + 0.05);
+        gain.gain.setValueAtTime(0.12, audioCtx.currentTime + start + dur - 0.05);
+        gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + start + dur);
+        osc.start(audioCtx.currentTime + start);
+        osc.stop(audioCtx.currentTime + start + dur);
+      }
+      beep(440, 0, 0.4); beep(480, 0, 0.4);
+      beep(440, 0.5, 0.4); beep(480, 0.5, 0.4);
+    } catch(e) {}
+  }
+  playRing();
+  ringInterval = setInterval(playRing, 2000);
+
   const outcome = window._callOutcome || 'fail';
 
   setTimeout(() => {
@@ -697,6 +770,8 @@ function startCallAnimation() {
   }, 300);
 
   setTimeout(() => {
+    clearInterval(ringInterval);
+    if (audioCtx) { try { audioCtx.close(); } catch(e) {} }
     document.getElementById('call-rings').style.display = 'none';
     if (outcome === 'success') {
       document.getElementById('call-status-text').textContent = '✅ Opgenomen!';
@@ -735,7 +810,7 @@ function showCallResult(type) {
     r.innerHTML += `<div class="outcome-block oc-red" style="margin-top:12px;">
       <div class="outcome-head"><span class="o-icon">📵</span><div><h3>Niemand neemt op.</h3><p>Je zit in de 60%. Taalbarrière, geen tijd, wantrouwen — het kan van alles zijn.</p></div></div>
       <div class="outcome-foot">
-        <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Walker et al. beschrijven taalbarrières, werkdruk en een gevoel van niet welkom zijn als structurele drempels die ouders beletten te reageren. Telefonisch contact werkt niet altijd — het hangt af van de context van het gezin.</p></div>
+        <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Walker et al. beschrijven taalbarrières, wisselende werkroosters en een gevoel van niet welkom zijn als structurele drempels. Soms lukt telefonisch contact niet meteen — dat is normaal en hoort bij de realiteit van deze doelgroep. De ankerpersoon is er precies voor dit soort situaties.</p></div>
         <p style="color:var(--teal);font-weight:600;margin-top:8px;font-size:.88rem;">→ De simulatie gaat verder naar de laatste stap…</p>
       </div>
     </div>`;
