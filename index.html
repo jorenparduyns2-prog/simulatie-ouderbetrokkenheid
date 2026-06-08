@@ -247,7 +247,7 @@
     </button>
     <button class="choice-btn" onclick="vote1('mail-slecht')" id="r1-mail-slecht">
       <span class="c-icon">✉️</span>
-      <span class="c-text"><strong>Mail sturen over de afwezigheid</strong><small>Je schrijft een formeel bericht over wat er misliep.</small></span>
+      <span class="c-text"><strong>Mail sturen over het ontbrekende materiaal</strong><small>Je schrijft een formeel bericht over wat hij telkens vergeet.</small></span>
     </button>
     <button class="choice-btn" onclick="vote1('mail-goed')" id="r1-mail-goed">
       <span class="c-icon">💬</span>
@@ -423,19 +423,19 @@
 
   <div class="outcome-block oc-orange">
     <div class="outcome-head"><span class="o-icon">😬</span><div><h3>📞 Bellen (eerste stap)</h3><p>"Waarom belt u zomaar? Had u niet eerst een berichtje kunnen sturen?"</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Bellen zonder voorafgaand contact kan voelen als een overval. Start altijd met een warm bericht, dan bellen.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Een uitnodigende schoolcultuur begint met warme, laagdrempelige communicatie. Een onverwacht telefoontje zonder voorafgaand contact past daar niet bij.</p></div></div>
   </div>
   <div class="outcome-block oc-red">
-    <div class="outcome-head"><span class="o-icon">😤</span><div><h3>✉️ Formele mail</h3><p>"Rayan doet niets fout. Jullie hebben het altijd op hem gemunt."</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemtaal creëert weerstand. De relatie is beschadigd voor ze begonnen is.</p></div></div>
+    <div class="outcome-head"><span class="o-icon">😤</span><div><h3>✉️ Formele mail</h3><p>"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld."</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Ouders die onderwijs als exclusieve verantwoordelijkheid van de school zien, reageren defensief op probleemgerichte communicatie. De relatie is beschadigd voor ze begonnen is.</p></div></div>
   </div>
   <div class="outcome-block oc-green">
     <div class="outcome-head"><span class="o-icon">✅</span><div><h3>💬 Laagdrempelige mail → bellen → ankerpersoon</h3><p>Het volledige stappenplan. Warm bericht, opvolging, dan de juiste schakel.</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011) · Jehoul et al. (2023)</div><p>Kwaliteitsvolle betrokkenheid begint met een uitnodiging. Elke stap op het juiste moment — dat is wat het verschil maakt.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011) · Jehoul et al. (2023)</div><p>Kwaliteitsvolle betrokkenheid begint met een uitnodiging. Jehoul et al. benadrukken dat toegankelijke communicatie de drempel verlaagt, zeker bij diverse populaties.</p></div></div>
   </div>
   <div class="outcome-block oc-red">
     <div class="outcome-head"><span class="o-icon">😵</span><div><h3>🧑‍💼 Meteen ankerpersoon</h3><p>De ankerpersoon heeft een burn-out als iedereen zo snel doorschakelt.</p></div></div>
-    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>De ankerpersoon is stap 3 — niet stap 1. Bewaar hem voor als jij het zelf niet meer kan oplossen.</p></div></div>
+    <div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein beschrijft de leerkracht als eerste actor in het partnerschap. De ankerpersoon is een extra schakel voor complexe situaties — niet als vervanging voor het eerste contact van de leerkracht zelf.</p></div></div>
   </div>
 
   <div class="highlight">
@@ -550,25 +550,25 @@ const outcomes1 = {
     cls:'oc-orange', icon:'😬',
     title:'Je hebt gebeld. Maar de ouders schrikken.',
     subtitle:'"Waarom belt u zomaar? Had u niet eerst een berichtje kunnen sturen?"',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel over Rayan…</div><div class="bbl-in" style="font-size:.72rem;">Drie weken?! Waarom geen berichtje eerst?</div><div class="bbl-in" style="font-size:.72rem;background:#fff3e0;">Dit is onbeleefd.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005) · Epstein (2011)</div><p>Bellen zonder voorafgaand contact kan voelen als een overval. Start met een warm bericht, dan bellen als opvolging.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goede intentie, verkeerde volgorde.</strong></p>`
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel over Rayan, hij heeft al 3 weken zijn materiaal niet…</div><div class="bbl-in" style="font-size:.72rem;">Waarom belt u zomaar op? Had u niet eerst iets kunnen sturen?</div><div class="bbl-in" style="font-size:.72rem;background:#fff3e0;">Dit overvalt me een beetje.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Ouderbetrokkenheid is een gedeeld partnerschap waarbij uitnodiging en toon cruciaal zijn. Een onverwacht telefoontje zonder voorafgaand contact past niet bij een warme, uitnodigende schoolcultuur.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goede intentie, verkeerde volgorde.</strong></p>`
   },
   'mail-slecht': {
     cls:'oc-red', icon:'😤',
     title:'De ouders schieten in de verdediging.',
-    subtitle:'"Rayan doet helemaal niets fout. Jullie hebben het altijd op hem gemunt."',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Reactie ontvangen</span></div><div class="bubble-wrap"><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">"Rayan doet niets fout. Jullie hebben het altijd op hem gemunt."</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Verder geen reactie.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemtaal creëert weerstand. De ouder beschermt zijn kind — een natuurlijke reactie. Maar het gesprek is nu geblokkeerd.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ De relatie is beschadigd voor ze begonnen is.</strong></p>`
+    subtitle:'"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld, dat is jullie organisatie."',
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Reactie ontvangen</span></div><div class="bubble-wrap"><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">"Rayan doet zijn best. Als hij zijn materiaal vergeet is dat niet zijn schuld."</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Verder geen reactie.</div></div></div></div></div><div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Probleemtaal creëert weerstand. De ouder beschermt zijn kind — een natuurlijke reactie. Maar het gesprek is nu geblokkeerd.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ De relatie is beschadigd voor ze begonnen is.</strong></p>`
   },
   'mail-goed': {
     cls:'oc-green', icon:'✅',
     title:'Perfect vertrekpunt!',
     subtitle:'Ouder voelt zich niet aangevallen. De deur staat open. Nu wachten we 2 dagen…',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Mail verzonden</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">"Dag, we denken aan Rayan. Is alles goed thuis?"</div><div style="background:#e8f5e9;border-radius:9px;padding:7px 9px;font-size:.72rem;color:#2D9E6B;font-weight:600;align-self:flex-start;">✓ Ouder voelt zich niet aangevallen.<br><span style="font-weight:400;color:#444;">De deur staat open.</span></div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011) · Hill & Tyson (2009)</div><p>Kwaliteitsvolle betrokkenheid begint met een uitnodiging. Maar 2 dagen later — geen reactie. Wat nu?</p></div><p style="margin-top:10px;font-size:.88rem;color:var(--teal);font-weight:600;">→ De simulatie gaat verder…</p>`
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📧 Mail verzonden</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">"Dag, ik wou even vragen hoe het gaat met Rayan. Is alles in orde thuis?"</div><div style="background:#e8f5e9;border-radius:9px;padding:7px 9px;font-size:.72rem;color:#2D9E6B;font-weight:600;align-self:flex-start;">✓ Ouder voelt zich niet aangevallen.<br><span style="font-weight:400;color:#444;">De deur staat open.</span></div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011) · Jehoul et al. (2023)</div><p>Kwaliteitsvolle betrokkenheid begint met een warme uitnodiging. Jehoul et al. benadrukken dat toegankelijke communicatie de drempel voor ouders verlaagt. Maar 2 dagen later — nog geen reactie. Wat nu?</p></div><p style="margin-top:10px;font-size:.88rem;color:var(--teal);font-weight:600;">→ De simulatie gaat verder…</p>`
   },
   ankerpersoon: {
     cls:'oc-red', icon:'😵',
     title:'De ankerpersoon heeft een burn-out.',
     subtitle:'Als elke leerkracht bij de minste twijfel doorschakelt, houdt niemand het vol.',
-    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>💬 Berichten · Ankerpersoon</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">Kan jij contact opnemen met de ouders van Rayan?</div><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">Dit is al de 8ste vraag vandaag… Ik kan dit niet alleen aan.</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Status: 🔴 overbelast</div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011) · Walker et al. (2005)</div><p>De ankerpersoon is stap 3 — niet stap 1. Start altijd zelf met bellen of een warm bericht.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Goed dat je hem kent — bewaar hem voor als het echt nodig is.</strong></p>`
+    body:`<div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>💬 Berichten · Ankerpersoon</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.7rem;">Kan jij contact opnemen met de ouders van Rayan?</div><div class="bbl-in" style="font-size:.7rem;background:#fff0f0;color:#c00;">Dit is al de 8ste vraag vandaag… Ik kan dit niet alleen aan.</div><div class="bbl-in" style="font-size:.7rem;color:#888;">Status: 🔴 overbelast</div></div></div></div></div><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein beschrijft ouderbetrokkenheid als een gedeelde verantwoordelijkheid waarbij de leerkracht zelf de eerste stap zet. De ankerpersoon is een schakel voor complexe situaties — niet voor elk eerste contactmoment.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Goed dat je hem kent — bewaar hem voor als het echt nodig is.</strong></p>`
   }
 };
 
@@ -578,19 +578,19 @@ const outcomes2 = {
     cls:'oc-orange', icon:'💚',
     title:'WhatsApp — misschien handig, maar…',
     subtitle:'Niet alle ouders hebben jouw nummer. En privé-apps zijn geen officieel schoolkanaal.',
-    body:`<div class="sci-box"><div class="sci-label">Jehoul et al. (2023)</div><p>WhatsApp kan laagdrempelig zijn, maar stelt vragen over privacy en formele communicatie. Bellen via het schoolnummer is betrouwbaarder en professioneler als opvolgstap.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Niet fout, maar niet de sterkste keuze als opvolging.</strong></p>`
+    body:`<div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>WhatsApp kan laagdrempelig aanvoelen, maar is geen officieel schoolkanaal en stelt vragen over privacy en bereikbaarheid. Bellen via het schoolnummer is een professionelere en betrouwbaardere opvolgstap.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Niet fout, maar niet de sterkste keuze als opvolging.</strong></p>`
   },
   huisbezoek: {
     cls:'oc-orange', icon:'🏠',
     title:'Huisbezoek — heel betrokken, maar ook heel intrusief.',
     subtitle:'Een huisbezoek zonder aankondiging kan voelen als een inval in de privésfeer.',
-    body:`<div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Huisbezoeken kunnen waardevol zijn — maar pas na duidelijke communicatie en met toestemming. Als eerste opvolgstap na een mail kan het overweldigend en grensoverschrijdend aanvoelen.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goed bedoeld — maar bellen is een logischere tussenstap.</strong></p>`
+    body:`<div class="sci-box"><div class="sci-label">Eigen inzicht op basis van schoolpraktijk</div><p>Huisbezoeken kunnen waardevol zijn, maar vereisen voorbereiding en toestemming. Als eerste opvolgstap na een mail kan het overweldigend aanvoelen voor ouders die nog geen vertrouwensband hebben met school.</p></div><p style="margin-top:10px;"><strong style="color:#C2410C;">⚠ Goed bedoeld — maar bellen is een logischere tussenstap.</strong></p>`
   },
   ankerpersoon2: {
     cls:'oc-red', icon:'😵',
     title:'Nog te vroeg voor de ankerpersoon.',
     subtitle:'Je hebt de mail gestuurd, maar nog niet gebeld. Er is nog een stap die jij zelf kan zetten.',
-    body:`<div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>De ankerpersoon is er voor als jij het zelf niet meer kan oplossen — na een warm bericht én na een telefoontje. Sla geen stappen over.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Eerst bellen — dan pas doorschakelen.</strong></p>`
+    body:`<div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein beschrijft de leerkracht als eerste actor in het partnerschap met ouders. De ankerpersoon is een extra schakel voor complexe situaties — pas nadat de leerkracht zelf stappen heeft gezet.</p></div><p style="margin-top:10px;"><strong style="color:var(--red);">✗ Eerst bellen — dan pas doorschakelen.</strong></p>`
   }
 };
 
@@ -649,7 +649,7 @@ function renderR2() {
     return;
   }
   if (v === 'bellen2') {
-    c.innerHTML = `<div class="outcome-block oc-green"><div class="outcome-head"><span class="o-icon">✅</span><div><h3>Juiste keuze!</h3><p>Bellen is de logische opvolgstap na een laagdrempelige mail. De belanimatie volgt zo meteen.</p></div></div><div class="outcome-foot"><div class="sci-box"><div class="sci-label">Hill & Tyson (2009) · Epstein (2011)</div><p>Warm bericht als basis, dan persoonlijk bellen als opvolging — dit is precies de aanpak die de literatuur aanbeveelt.</p></div><p><strong style="color:var(--green)">✓ Goed gedaan — de belanimatie start zo meteen.</strong></p></div></div>`;
+    c.innerHTML = `<div class="outcome-block oc-green"><div class="outcome-head"><span class="o-icon">✅</span><div><h3>Juiste keuze!</h3><p>Bellen is de logische opvolgstap na een laagdrempelige mail. De belanimatie volgt zo meteen.</p></div></div><div class="outcome-foot"><div class="sci-box"><div class="sci-label">Epstein (2011)</div><p>Epstein benadrukt proactief contact als fundament van partnerschap. Een warme mail gevolgd door een telefoontje is een laagdrempelige maar directe aanpak die past bij een uitnodigende schoolcultuur.</p></div><p><strong style="color:var(--green)">✓ Goed gedaan — de belanimatie start zo meteen.</strong></p></div></div>`;
     return;
   }
   const o = outcomes2[v];
@@ -714,8 +714,8 @@ function showCallResult(type) {
     r.innerHTML += `<div class="outcome-block oc-green" style="margin-top:12px;">
       <div class="outcome-head"><span class="o-icon">🎉</span><div><h3>Opgenomen! Afspraak gemaakt.</h3><p>"We komen volgende week langs." — Contact gelukt.</p></div></div>
       <div class="outcome-foot">
-        <div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel als opvolging van mijn mail…</div><div class="bbl-in" style="font-size:.72rem;">Ah ja! We komen volgende week langs.</div><div class="bbl-status">✓✓</div></div></div></div></div>
-        <div class="sci-box"><div class="sci-label">Hill & Tyson (2009) · Epstein (2011)</div><p>Warm bericht als basis, dan bellen als opvolging — dit is precies de aanpak die de literatuur aanbeveelt. Jij zat in de gelukkige 40%.</p></div>
+        <div class="phone-wrap"><div class="phone"><div class="phone-notch"><div class="phone-pill"></div></div><div class="phone-screen"><div class="app-header"><span>📞 Bellen · Ouders Rayan</span></div><div class="bubble-wrap"><div class="bbl-out" style="font-size:.72rem;">Dag, ik bel als opvolging van mijn mail over Rayan…</div><div class="bbl-in" style="font-size:.72rem;">Ah ja! We wisten niet dat het al zo lang duurde. We komen langs.</div><div class="bbl-status">✓✓</div></div></div></div></div>
+        <div class="sci-box"><div class="sci-label">Epstein (2011) · Walker et al. (2005)</div><p>Proactief en persoonlijk contact vanuit de school verlaagt de drempel voor ouders. Walker et al. beschrijven hoe een expliciete uitnodiging vanuit de school een van de sterkste factoren is voor ouderbetrokkenheid.</p></div>
         <p><strong style="color:var(--green);">✓ Stappenplan werkt. Jij zat in de 40% met geluk.</strong></p>
       </div>
     </div>`;
@@ -723,7 +723,7 @@ function showCallResult(type) {
     r.innerHTML += `<div class="outcome-block oc-red" style="margin-top:12px;">
       <div class="outcome-head"><span class="o-icon">📵</span><div><h3>Niemand neemt op.</h3><p>Je zit in de 60%. Taalbarrière, geen tijd, wantrouwen — het kan van alles zijn.</p></div></div>
       <div class="outcome-foot">
-        <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>60% van de gevallen lukt het niet via telefoon alleen. Dit is normaal — en het stappenplan houdt hier rekening mee. Nu is de ankerpersoon écht aan zet.</p></div>
+        <div class="sci-box"><div class="sci-label">Walker et al. (2005)</div><p>Walker et al. beschrijven taalbarrières, werkdruk en een gevoel van niet welkom zijn als structurele drempels die ouders beletten te reageren. Telefonisch contact werkt niet altijd — het hangt af van de context van het gezin.</p></div>
         <p style="color:var(--teal);font-weight:600;margin-top:8px;font-size:.88rem;">→ De simulatie gaat verder naar de laatste stap…</p>
       </div>
     </div>`;
